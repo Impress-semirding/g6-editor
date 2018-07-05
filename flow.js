@@ -8,15 +8,22 @@
 
 // /* eslint-disable */
 import G6 from '@antv/g6';
+import Grid from '@antv/g6/plugins/layout.grid/';
+import each from 'lodash/each';
 
-import GenNode from './genFlowNode';
+import GenNode from './genFlowNode.ts';
+import Dragger from '_antd@2.13.14@antd/lib/upload/Dragger';
+import tt from './test.ts';
 
 // import BaseDom from './dom';
 // import { mixin } from './util';
 
+
+const grid = new Grid({});
 class Flow extends G6.Graph {
   constructor(cfg) {
     const { graph } = cfg;
+    // super(Object.assign({}, graph, { plugins: [grid] }));
     super(graph);
     this.moduleName = 'Flow';
     this.nodeMange = new GenNode();
@@ -38,7 +45,14 @@ class Flow extends G6.Graph {
     this.event = event;
   }
 
-  onDrag() {
+  clearDrag(event) {
+    each(this._events[event], (fn) => {
+      this.off(event, fn);
+    });
+    // this._events[event] = [];
+  }
+
+  dragNode() {
     let node;
     let dx;
     let dy;
@@ -60,6 +74,42 @@ class Flow extends G6.Graph {
     });
   }
 
+  dragGraph() {
+    let gdx;
+    let gdy;
+    this.on('dragstart', (ev) => {
+      if (!ev.item) {
+        gdx = ev.x;
+        gdy = ev.y;
+      }
+    });
+    this.on('drag', (ev) => {
+      if (!ev.item) {
+        const x = ev.x;
+        const y = ev.y;
+        this && this.translate((x - gdx) / (x - gdx), (y - gdy) / (x - gdx));
+      }
+    });
+    this.on('dragend', (ev) => {// eslint-disable-line
+    });
+  }
+
+  onDrag() {
+    this.dragNode();
+    // this.dragGraph();
+    // this.on('node:mouseenter', () => {
+    //   this.clearDrag('dragstart');
+    //   this.clearDrag('drag');
+    //   this.clearDrag('dragend');
+    //   debugger;
+    //   console.log(this);
+    // });
+
+    // this.on('node:mouseleave', () => {
+    //   this.dragGraph();
+    // });
+  }
+
   onDrop(ev) {// eslint-disable-line
     ev.preventDefault();
     const clientX = ev.clientX;
@@ -69,7 +119,7 @@ class Flow extends G6.Graph {
     this.nodeMange.extendModelCard(shape,
       { dragOrigin: this.dragOrigin, dragTarget: { clientX, clientY }, width: 184, height: 40 },
     extendId);
-    this.read(this.nodeMange.cfgs);
+    this.read(this.nodeMange.getData());
   }
 
   findDom() {
@@ -101,7 +151,7 @@ class Flow extends G6.Graph {
     super.read(data);
     setTimeout(() => {
       this.onDrag();
-    }, 2000);
+    }, 50);
   }
 
   // registerNode(id, attrs) {

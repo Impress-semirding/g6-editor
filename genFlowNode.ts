@@ -7,29 +7,27 @@
 */
 /* eslint-disable */
 import Editor from './index';
-import tpls from './tpls';
+import tpls from './tpls.ts';
 
-
-const INNIT = Symbol('editor#gennode@@init');
 
 class GenNode {
-  constructor(cfg) {
-    this._cfg = cfg;// eslint-disable-line
-    this._tpls = [];// eslint-disable-line
+  private _cfg: any;
+  private _tpls: any;
+  private nodes: any;
+  constructor(cfg: any) {
+    this._cfg = cfg;
+    this._tpls = [];
     this.nodes = [];
   }
 
-  [INNIT]() {
-    // this.registerModelCard();
-  }
 
-  get cfgs() {
+  getData() {
     return {
       nodes: this.nodes
     }
   }
 
-  createData(id, attrs, shape) {
+  createData(id: number, attrs: any, shape: string) {
     const { dragOrigin:  { clientX: oX, clientY: oY },
       dragTarget: { clientX, clientY },
     width, height } = attrs;
@@ -38,11 +36,11 @@ class GenNode {
     this.nodes.push({ id, shape, x, y });
   }
   //  暂时只支持node节点模版
-  extendModelCard(shape,atrrs, extendId) {
-    const attrs = tpls[shape];
+  extendModelCard(shape: string,atrrs: any, extendId: string) {
+    const tplAttrs = tpls[shape];
     const id = new Date().getTime();
     this.createData(id, atrrs, shape);
-    Editor.Flow.registerNode(shape, attrs, extendId);
+    Editor.Flow.registerNode(shape, tplAttrs, extendId);
   }
 }
 

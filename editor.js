@@ -7,7 +7,7 @@
 */
 /* eslint-disable */
 import Flow from './flow';
-import Base from './base';
+import Base from './base.ts';
 
 const INITCONTAINER = Symbol('editor#initcontainer');
 

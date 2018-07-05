@@ -13,17 +13,17 @@ export default class Base extends EventEmitter {
     return {};
   }
 
-  constructor(cfg) {
+  constructor(cfg: object) {
     super();
     const defaultCfg = this.getDefaultCfg();
-    this._cfg = Object.assign({}, defaultCfg, cfg);
+    this._cfg = (<any>Object).assign({}, defaultCfg, cfg);
   }
 
-  get(name) {
+  get(name: string) {
     return this._cfg[name];
   }
 
-  set(name, value) {
+  set(name: string, value: any) {
     this._cfg[name] = value;
   }
 
