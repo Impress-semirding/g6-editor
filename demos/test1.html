@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>网图编辑器（变型2）</title>
+    <script src="https://a.alipayobjects.com/jquery/jquery/1.11.1/jquery.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/assets/g6/1.2.8/g6.min.js"></script>
+  </head>
+  <body>
+    <div id="c1"></div>
+    <script type="text/javascript">
+      // 第一步：注册节点
+      G6.registNode('customNode1', {
+        draw: function(cfg, group) {
+          var shape = group.addShape('rect', {
+            attrs: {
+              x: cfg.x-40,
+              y: cfg.y-40,
+              width: 80,
+              height: 80,
+              fill: '#fff',
+              stroke: 'green'
+            }
+          });
+          return shape;
+        },
+        getAnchorPoints: function(){
+          return [
+            [0, 0.25],
+            [0, 0.5],
+            [0, 0.75],
+            [1, 0.25],
+            [1, 0.5],
+            [1, 0.75],
+            [0.25, 0],
+            [0.5, 0],
+            [0.75, 0],
+            [0.25, 1],
+            [0.5, 1],
+            [0.75, 1]
+          ];
+        }
+      }, 'rect');
+      G6.registNode('customNode2', {
+        draw: function(cfg, group) {
+          var shape = group.addShape('rect', {
+            attrs: {
+              x: cfg.x-40,
+              y: cfg.y-40,
+              width: 80,
+              height: 80,
+              fill: '#fff',
+              stroke: 'red'
+            }
+          });
+          return shape;
+        }
+      }, 'customNode1');
+      // 第二步：设置按钮
+      $('#c1').append('<button id="addCustom1">自定义形1</button>');
+      $('#c1').append('<button id="addCustom2">自定义形2</button>');
+      $('#c1').append('<button id="drag">拖拽模式</button>');
+      $('#c1').append('<button id="edit">编辑模式</button>');
+      $('#c1').append('<button id="save">保存</button>');
+      var addCustom1 = $('#addCustom1');
+      var addCustom2 = $('#addCustom2');
+      var drag = $('#drag');
+      var edit = $('#edit');
+      var save = $('#save');
+      var data = {
+        "nodes": [{
+          "shape": "customNode1",
+          "x": 370,
+          "y": 30,
+          "id": "27c5046d"
+        }, {
+          "shape": "customNode1",
+          "x": 430,
+          "y": 330,
+          "id": "99d69b85"
+        }, {
+          "shape": "customNode2",
+          "x": 650,
+          "y": 220,
+          "id": "f8cfdbd2"
+        }, {
+          "shape": "customNode1",
+          "x": 80,
+          "y": 210,
+          "id": "3fabea06"
+        }],
+        "edges": [{
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "99d69b85",
+          "id": "73b7ef7f",
+          "controlPoints": [{
+            "x": 410,
+            "y": 110.5
+          }, {
+            "x": 470,
+            "y": 329.5
+          }],
+          "sourceAnchor": 10,
+          "targetAnchor": 7
+        }, {
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "f8cfdbd2",
+          "id": "cc306f85",
+          "controlPoints": [{
+            "x": 450.5,
+            "y": 70
+          }, {
+            "x": 690,
+            "y": 219.5
+          }],
+          "sourceAnchor": 4,
+          "targetAnchor": 7
+        }, {
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "f8cfdbd2",
+          "id": "519d49a4",
+          "controlPoints": [{
+            "x": 410,
+            "y": 29.5
+          }, {
+            "x": 730.5,
+            "y": 239.75
+          }],
+          "sourceAnchor": 7,
+          "targetAnchor": 3
+        }, {
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "3fabea06",
+          "id": "286f8ca2",
+          "controlPoints": [{
+            "x": 369.5,
+            "y": 90.25
+          }, {
+            "x": 160.5,
+            "y": 229.75
+          }],
+          "sourceAnchor": 2,
+          "targetAnchor": 3
+        }, {
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "3fabea06",
+          "id": "f559fec8",
+          "controlPoints": [{
+            "x": 389.75,
+            "y": 29.5
+          }, {
+            "x": 79.5,
+            "y": 229.75
+          }],
+          "sourceAnchor": 6,
+          "targetAnchor": 0
+        }, {
+          "shape": "polyLineFlow",
+          "source": "27c5046d",
+          "target": "3fabea06",
+          "id": "4b0a2dcf",
+          "controlPoints": [{
+            "x": 389.75,
+            "y": 110.5
+          }, {
+            "x": 160.5,
+            "y": 270.25
+          }],
+          "sourceAnchor": 9,
+          "targetAnchor": 5
+        }, {
+          "shape": "polyLineFlow",
+          "source": "99d69b85",
+          "target": "f8cfdbd2",
+          "id": "c2514050",
+          "controlPoints": [{
+            "x": 490.25,
+            "y": 410.5
+          }, {
+            "x": 669.75,
+            "y": 300.5
+          }],
+          "sourceAnchor": 11,
+          "targetAnchor": 9
+        }]
+      };
+      // 第三步：配置画布
+      var net = new G6.Net({
+        id: 'c1',      // 容器ID
+        mode: 'edit',  // 编辑模式
+        fitView: 'tl', // 自适应视口为左上
+        height: 420    // 画布高
+      });
+      net.source(data.nodes, data.edges);
+      // 第四步：配置绑定事件
+      addCustom1.on('click', function(ev){
+        net.beginAdd('node', {
+          shape: 'customNode1'
+        });
+      });
+      addCustom2.on('click', function(ev){
+        net.beginAdd('node', {
+          shape: 'customNode2'
+        });
+      });
+      drag.on('click', function(ev) {
+        net.changeMode('drag');
+      });
+      edit.on('click', function(ev) {
+        net.changeMode('edit');
+      });
+      save.on('click', function(ev) {
+        var saveData = net.save();
+        var json = JSON.stringify(saveData, null, 2)
+        console.log(saveData, json);
+      });
+      // 第五️步：编辑交互变形
+      var dragging = false;
+      net.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+      net.on('dragstart', function(ev){
+        dragging = true;
+      });
+      net.on('dragend', function(ev){
+        dragging = false;
+      });
+      // 进入锚点切换到曲线添加模式
+      net.on('mouseenter', function(ev) {
+        var shape = ev.shape;
+        if(shape && shape.hasClass('anchor-point') && !dragging) {
+          net.beginAdd('edge', {
+            shape: 'polyLineFlow'
+          });
+        }
+      });
+      // 离开锚点切换回编辑模式
+      net.on('mouseleave', function(ev) {
+        var shape = ev.shape;
+        if(shape && shape.hasClass('anchor-point') && !dragging) {
+          net.changeMode('edit');
+        }
+      });
+      net.on('afteritemrender', function(ev){
+        var item = ev.item;
+        if(item.get('type') === 'node'){
+          net.showAnchor(item);
+        }
+      });
+      // 第六步：渲染关系图
+      net.render();
+    </script>
+  </body>
+</html>
