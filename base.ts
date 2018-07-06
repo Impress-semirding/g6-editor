@@ -7,8 +7,11 @@
 */
 /* eslint-disable */
 const EventEmitter = require('wolfy87-eventemitter');
+// import EventEmitter from 'wolfy87-eventemitter'
 
 export default class Base extends EventEmitter {
+  protected _cfg: any;
+  protected destroyed: Boolean;
   getDefaultCfg() {
     return {};
   }

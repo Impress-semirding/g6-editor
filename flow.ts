@@ -7,26 +7,31 @@
 */
 
 // /* eslint-disable */
-import G6 from '@antv/g6';
-import Grid from '@antv/g6/plugins/layout.grid/';
-import each from 'lodash/each';
+// declare module "@antv/g6";
+// import G6 from '@antv/g6';
+const G6 = require('@antv/g6')
 
-import GenNode from './genFlowNode.ts';
-import Dragger from '_antd@2.13.14@antd/lib/upload/Dragger';
-import tt from './test.ts';
-
+import GenNode from './genFlowNode';
 // import BaseDom from './dom';
 // import { mixin } from './util';
 
+interface Drag {
+  clientX: number;
+  clientY: number;
+}
 
-const grid = new Grid({});
 class Flow extends G6.Graph {
-  constructor(cfg) {
+  private moduleName: string;
+  private nodeMange: GenNode;
+  private dragOrigin: Drag;
+  private containers: any;
+  private event: any;
+  constructor(cfg: any) {
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
     super(graph);
     this.moduleName = 'Flow';
-    this.nodeMange = new GenNode();
+    this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     // mixin(this, BaseDom);
   }
@@ -41,76 +46,58 @@ class Flow extends G6.Graph {
     });
   }
 
-  addEventTo(event) {
+  addEventTo(event: any) {
     this.event = event;
   }
 
-  clearDrag(event) {
-    each(this._events[event], (fn) => {
-      this.off(event, fn);
-    });
-    // this._events[event] = [];
-  }
-
   dragNode() {
-    let node;
-    let dx;
-    let dy;
-    this.on('node:dragstart', (ev) => {
+    let node: any;
+    let dx: number;
+    let dy: number;
+    this.on('node:dragstart', (ev: any) => {
       const { item } = ev;
       const model = item.getModel();
       node = item;
       dx = model.x - ev.x;
       dy = model.y - ev.y;
     });
-    this.on('node:drag', (ev) => {
+    this.on('node:drag', (ev: any) => {
       node && this.update(node, {// eslint-disable-line
         x: ev.x + dx,
         y: ev.y + dy,
       });
     });
-    this.on('node:dragend', (ev) => {// eslint-disable-line
+    this.on('node:dragend', (ev: any) => {// eslint-disable-line
       node = undefined;
     });
   }
 
   dragGraph() {
-    let gdx;
-    let gdy;
-    this.on('dragstart', (ev) => {
+    let gdx: number;
+    let gdy: number;
+    this.on('dragstart', (ev: any) => {
       if (!ev.item) {
         gdx = ev.x;
         gdy = ev.y;
       }
     });
-    this.on('drag', (ev) => {
+    this.on('drag', (ev: any) => {
       if (!ev.item) {
         const x = ev.x;
         const y = ev.y;
         this && this.translate((x - gdx) / (x - gdx), (y - gdy) / (x - gdx));
       }
     });
-    this.on('dragend', (ev) => {// eslint-disable-line
+    this.on('dragend', (ev: any) => {// eslint-disable-line
     });
   }
 
   onDrag() {
     this.dragNode();
     // this.dragGraph();
-    // this.on('node:mouseenter', () => {
-    //   this.clearDrag('dragstart');
-    //   this.clearDrag('drag');
-    //   this.clearDrag('dragend');
-    //   debugger;
-    //   console.log(this);
-    // });
-
-    // this.on('node:mouseleave', () => {
-    //   this.dragGraph();
-    // });
   }
 
-  onDrop(ev) {// eslint-disable-line
+  onDrop(ev: any) {// eslint-disable-line
     ev.preventDefault();
     const clientX = ev.clientX;
     const clientY = ev.clientY;
@@ -124,7 +111,7 @@ class Flow extends G6.Graph {
 
   findDom() {
     const { container } = this._cfg;
-    this.containers = this.findDomById(container);
+    this.containers = this.findDomById(container, null);
     this.addEventListener();
   }
 
@@ -132,32 +119,27 @@ class Flow extends G6.Graph {
     this.findDom();
   }
 
-  findDomById(container, node) { //eslint-disable-line
+  findDomById(container: string, node: any) { //eslint-disable-line
     if (node) {
       return node.getElementById(container);
     }
     return document.getElementById(container);
   }
 
-  findDomByClassName(container, node) {//eslint-disable-line
+  findDomByClassName(container: string, node: any) {//eslint-disable-line
     if (node) {
       return node.getElementsByClassName(container);
     }
     return document.getElementsByClassName(container);
   }
 
-  read(data) {
+  read(data: any) {
     // this.nodeMange.setData(data);
     super.read(data);
     setTimeout(() => {
       this.onDrag();
     }, 50);
   }
-
-  // registerNode(id, attrs) {
-  //   debugger;
-  //   super.registerNode(id, attrs);
-  // }
 }
 
 

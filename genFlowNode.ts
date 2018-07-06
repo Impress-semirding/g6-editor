@@ -7,7 +7,7 @@
 */
 /* eslint-disable */
 import Editor from './index';
-import tpls from './tpls.ts';
+import tpls from './tpls';
 
 
 class GenNode {

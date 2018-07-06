@@ -5,26 +5,18 @@
  * @modify date 2018-06-27 06:08:18
  * @desc [description]
 */
-/* eslint-disable */
-import Flow from './flow';
-import Base from './base.ts';
+import Base from './base';
 
-const INITCONTAINER = Symbol('editor#initcontainer');
-
-function createNode(htmlStr, style) {
-  const div = document.createElement('div');
-  div.innerHTML = htmlStr;
-  const s = div.childNodes[0];
-  s.style = style;
-  return s;
-}
 
 class Editor extends Base {
-  constructor(cfg) {
+
+  private modules: Array<any>;
+  constructor(cfg: any) {
     super(cfg);
-    this[INITCONTAINER]();
+    this.initContainer();
+    this.modules = [];
   }
-  [INITCONTAINER]() {
+  private initContainer() {
     let container = this.get('container');
     if (!container) {
       // Compatible with id written
@@ -45,24 +37,27 @@ class Editor extends Base {
     // this.set('_graphContainer', graphContainer);
   }
 
-  add(component) {
+  // addListener(type: string, func: any) : void {};
+  // emitEvent(type: string, data: any) : void {};
+
+  add(component: any) {
     if (typeof component !== 'object') return;
-    this[component] = component;
+    this.modules.push(component);
     this.addEvent(component);
     if (component.addEventTo) component.addEventTo(this);
   }
 
-  addEvent(component) {
+  addEvent(component: any) {
     console.log(`----register event ${component.moduleName}@@parse -----------`);
     this.addListener(`${component.moduleName}@@parse`, component.parse.bind(component));
   }
 
-  emit(type, params) {
+  emit(type: string, params: any) {
     console.log(`----emit event ${type} -----------`);
     this.emitEvent(type, []);
   }
 
-  registerTemplateNodes(cfg) {
+  registerTemplateNodes(cfg: any) {
 
   }
 }
