@@ -37,8 +37,12 @@ class Editor extends Base {
     // this.set('_graphContainer', graphContainer);
   }
 
-  // addListener(type: string, func: any) : void {};
-  // emitEvent(type: string, data: any) : void {};
+  addListener(type: string, func: any) : void {
+    super.addListener(type, func);
+  };
+  emitEvent(type: string, data: any) : void {
+    super.emitEvent(type, data);
+  };
 
   add(component: any) {
     if (typeof component !== 'object') return;

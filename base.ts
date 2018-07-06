@@ -30,6 +30,18 @@ export default class Base extends EventEmitter {
     this._cfg[name] = value;
   }
 
+  addListener(type: string, func: any) : void {
+    super.addListener(type, func);
+  };
+
+  emitEvent(type: string, data: any) : void {
+    super.emitEvent(type, data);
+  };
+
+  removeAllListeners() : void {
+    super.removeAllListeners();
+  }
+
   destroy() {
     this._cfg = {};
     this.removeAllListeners();
