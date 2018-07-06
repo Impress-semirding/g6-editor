@@ -8,7 +8,7 @@
 
 // /* eslint-disable */
 // declare module "@antv/g6";
-// import G6 from '@antv/g6';
+
 const G6 = require('@antv/g6')
 
 import GenNode from './genFlowNode';

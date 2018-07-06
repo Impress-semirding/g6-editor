@@ -7,13 +7,13 @@
 */
 /* eslint-disable */
 export default class BaseDom {
-  findDomById(container: string, node: any) {
+  findDomById(container: string, node: Document) {
     if (node) {
       return node.getElementById(container);
     }
     return document.getElementById(container);
   }
-  findDomByClassName(container: string, node: any) {
+  findDomByClassName(container: string, node: Document) {
     if (node) {
       return node.getElementsByClassName(container);
     }
