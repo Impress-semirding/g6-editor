@@ -7,7 +7,7 @@
 */
 /* eslint-disable */
 import Editor from './index';
-import tpls from './tpls';
+import getTpl from './tpls';
 
 
 class GenNode {
@@ -37,7 +37,7 @@ class GenNode {
   }
   //  暂时只支持node节点模版
   extendModelCard(shape: string,atrrs: any, extendId: string) {
-    const tplAttrs = tpls[shape];
+    const tplAttrs = getTpl(shape);
     const id = new Date().getTime();
     this.createData(id, atrrs, shape);
     Editor.Flow.registerNode(shape, tplAttrs, extendId);
