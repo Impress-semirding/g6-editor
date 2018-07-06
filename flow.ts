@@ -73,28 +73,28 @@ class Flow extends G6.Graph {
   }
 
   dragGraph() {
-    let gdx: number;
-    let gdy: number;
+    let lastPoint: any;
     this.on('dragstart', (ev: any) => {
-      if (!ev.item) {
-        gdx = ev.x;
-        gdy = ev.y;
-      }
     });
     this.on('drag', (ev: any) => {
       if (!ev.item) {
-        const x = ev.x;
-        const y = ev.y;
-        this && this.translate((x - gdx) / (x - gdx), (y - gdy) / (x - gdx));
+        if (lastPoint) {
+          this && this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
+        }
+        lastPoint = {
+          x: ev.domX,
+          y: ev.domY,
+        };
       }
     });
     this.on('dragend', (ev: any) => {// eslint-disable-line
+      lastPoint = undefined;
     });
   }
 
   onDrag() {
     this.dragNode();
-    // this.dragGraph();
+    this.dragGraph();
   }
 
   onDrop(ev: any) {// eslint-disable-line
