@@ -7,14 +7,18 @@
 */
 import Base from './base';
 
+interface Modules {
+  [propName: string]: any;
+}
+
 
 class Editor extends Base {
 
-  private modules: Array<any>;
+  private modules: Modules;
   constructor(cfg: any) {
     super(cfg);
     this.initContainer();
-    this.modules = [];
+    this.modules = {};
   }
   private initContainer() {
     let container = this.get('container');
@@ -46,7 +50,7 @@ class Editor extends Base {
 
   add(component: any) {
     if (typeof component !== 'object') return;
-    this.modules.push(component);
+    this.modules[component.moduleName] = component;
     this.addEvent(component);
     if (component.addEventTo) component.addEventTo(this);
   }
