@@ -1,60 +1,35 @@
-import React from 'react';
+import * as React from 'react';
+
 import G6Editor, { Flow, Itempannel, ToolBar } from '../dist';
 // import 'antd/dist/antd.css';
 
 export default class Editor extends React.Component {
-  constructor(props) {
+  private editor: any;
+  private page: any;
+  constructor(props: any) {
     super(props);
     this.state = {
       selectedModel: {}, // 当前选中项数据模型
-      curZoom: 1, // 当前缩放比率
-      minZoom: 0.5, // 最小缩放比率
-      maxZoom: 2, // 最大缩放比率
     };
   }
-  changeZoom(zoom) {
-    const page = this.page;
-    page.zoom(zoom);
-  }
-  toggleGrid(ev) {
-    const page = this.page;
-    if (ev.target.checked) {
-      page.showGrid();
-    } else {
-      page.hideGrid();
-    }
-  }
-  updateGraph(key, value) {
-    const editor = this.editor;
-    editor.executeCommand(() => {
-      const page = this.page;
-      const selectedItems = page.getSelected();
-      selectedItems.forEach((item) => {
-        const updateModel = {};
-        updateModel[key] = value;
-        page.update(item, updateModel);
-      });
-    });
-  }
-  genDom(params) {
-    const { width, height, x, y } = params;
-    const node = document.getElementsByClassName('graph-container-html-Elements');
-    const div = document.createElement('div');
-    div.innerHTML = '我是dom节点哟';
-    div.style.display = 'block';
-    div.style.position = 'absolute';
-    div.style.width = `${width}px`;
-    div.style.height = `${height}px`;
-    div.style.left = `${x}px`;
-    div.style.top = `${y}px`;
-    div.style.background = 'rgba(1, 1, 1, 0.3)';
-    div.addEventListener('click', (e) => { alert(1111); });
-    node[0].appendChild(div);
-  }
 
-  onDrag(pages) {
-  }
-  componentDidMount() {
+  // genDom(params) {
+  //   const { width, height, x, y } = params;
+  //   const node = document.getElementsByClassName('graph-container-html-Elements');
+  //   const div = document.createElement('div');
+  //   div.innerHTML = '我是dom节点哟';
+  //   div.style.display = 'block';
+  //   div.style.position = 'absolute';
+  //   div.style.width = `${width}px`;
+  //   div.style.height = `${height}px`;
+  //   div.style.left = `${x}px`;
+  //   div.style.top = `${y}px`;
+  //   div.style.background = 'rgba(1, 1, 1, 0.3)';
+  //   div.addEventListener('click', (e) => { alert(1111); });
+  //   node[0].appendChild(div);
+  // }
+
+  public componentDidMount() {
     // 生成 G6 Editor 编辑器
     // const height = window.innerHeight - 38;
     const editor = this.editor = new G6Editor({ container: 'editor' });
@@ -63,7 +38,7 @@ export default class Editor extends React.Component {
     //   height: 120,
     //   width: 200,
     // });
-    const toolbar = new Toolbar({
+    const toolbar = new ToolBar({
       container: 'toolbar',
     });
     // const contextmenu = new G6Editor.Contextmenu({
@@ -80,30 +55,15 @@ export default class Editor extends React.Component {
       graph: {
         container: 'page',
         id: 'page',
-        width: pages.clientWidth,
-        height: pages.clientHeight,
         // fitView: 'autoZoom',
-        grid: {
-          forceAlign: true, // 是否支持网格对齐
-          cell: 30,         // 网格大小
-          line: {           // 网格线样式
-            stroke: '#333',
-          },
-        },
-      },
-      grid: {
-        forceAlign: true, // 是否支持网格对齐
-        cell: 30,         // 网格大小
-        line: {           // 网格线样式
-          stroke: '#333',
-        },
+        height: pages.clientHeight,
+        width: pages.clientWidth,
       },
       noEndEdge: false,
-      edgeResizeable: false,
     });
     const self = this;
 
-    G6Editor.Flow.registerNode('model-card', {
+    Flow.registerNode('model-card', {
       draw(item) {
         const group = item.getGraphicGroup();
         const model = item.getModel();
@@ -114,7 +74,6 @@ export default class Editor extends React.Component {
         const borderRadius = 4;
         // const { x: px, y: py } = item.model;
         // self.genDom({ width, height, x: px + x, y: py + y });
-        console.log(x, y);
         const keyShape = group.addShape('rect', {
           attrs: {
             x: 10,
@@ -200,7 +159,6 @@ export default class Editor extends React.Component {
         };
       },
     });
-    this.onDrag(page);
     const scale = 1;
     //   test case
     // setInterval(() => {
