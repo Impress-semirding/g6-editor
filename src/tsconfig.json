@@ -7,7 +7,7 @@
       "target": "es5",
   },
   "include": [
-    "*.tsx"
+    "./*.ts"
   ],
   "exclude": [
     "node_modules"
