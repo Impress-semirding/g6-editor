@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import G6Editor, { Flow, Itempannel, ToolBar } from '../dist';
+import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src';
 // import 'antd/dist/antd.css';
 
 export default class Editor extends React.Component {

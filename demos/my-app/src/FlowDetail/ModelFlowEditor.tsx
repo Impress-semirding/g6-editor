@@ -20,9 +20,10 @@ export default class ModelFlowEditor extends Editor {
   }
 
   public render() {
-    return (<div id="editor" style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
+    return (<div id="editor" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <ToolBar />
-      <div className="bottom-container" style={{ flex: 1 }}>
+      <div style={{ flex: 16}}>
+      <div className="bottom-container">
         {/* <Contextmenu /> */}
         <div id="itempannel">
           <ul>
@@ -43,6 +44,7 @@ export default class ModelFlowEditor extends Editor {
             </li>
           </ul>
         </div>
+        <Page />
         {/* <Navigator
           curZoom={curZoom}
           minZoom={minZoom}
@@ -50,7 +52,7 @@ export default class ModelFlowEditor extends Editor {
           changeZoom={this.changeZoom.bind(this)}
         />*/}
       </div>
-      <Page />
+      </div>
     </div>);
   }
 }
