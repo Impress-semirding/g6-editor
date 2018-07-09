@@ -6,7 +6,7 @@
  * @desc [description]
 */
 /* eslint-disable */
-import Editor from './index';
+import Flow from './flow';
 import getTpl from './tpls';
 
 
@@ -40,7 +40,7 @@ class GenNode {
     const tplAttrs = getTpl(shape);
     const id = new Date().getTime();
     this.createData(id, atrrs, shape);
-    Editor.Flow.registerNode(shape, tplAttrs, extendId);
+    Flow.registerNode(shape, tplAttrs, extendId);
   }
 }
 

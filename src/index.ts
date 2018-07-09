@@ -14,10 +14,12 @@ import Flow from './flow';
 import ToolBar from './toolbar';
 
 
-Editor.Itempannel = Itempannel;
-Editor.Flow = Flow;
-Editor.Toolbar = ToolBar;
 export default Editor;
+export {
+  Itempannel,
+  Flow,
+  ToolBar
+}
 // export default {
 //   createG6,
 //   ...G6,

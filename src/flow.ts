@@ -21,7 +21,7 @@ interface Drag {
 }
 
 class Flow extends G6.Graph {
-  private moduleName: string;
+  // private moduleName: string;
   private nodeMange: GenNode;
   private dragOrigin: Drag;
   private containers: any;
@@ -30,7 +30,7 @@ class Flow extends G6.Graph {
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
     super(graph);
-    this.moduleName = 'Flow';
+    // this.moduleName = 'Flow';
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     // mixin(this, BaseDom);
@@ -38,9 +38,9 @@ class Flow extends G6.Graph {
 
   addEventListener() {
     const { containers } = this;
-    containers.addEventListener('dragover', (ev) => { ev.preventDefault(); }, false);
+    containers.addEventListener('dragover', (ev: any) => { ev.preventDefault(); }, false);
     containers.addEventListener('drop', this.onDrop.bind(this), false);
-    this.event.addListener('Itempannel@@dragitem', (ev) => {
+    this.event.addListener('Itempannel@@dragitem', (ev: any) => {
       const { clientX, clientY } = ev;
       this.dragOrigin = { clientX, clientY };
     });
@@ -147,6 +147,14 @@ class Flow extends G6.Graph {
   //  动态注册事件，由toolbar配置启动。
   registerEvent() {
 
+  }
+
+  update(type: string, func: any) {
+    super.update(type, func);
+  }
+
+  translate(x: number, y: number) {
+    super.translate(x, y);
   }
 }
 
