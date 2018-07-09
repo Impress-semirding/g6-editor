@@ -25,6 +25,8 @@ class Flow extends G6.Graph {
   private dragOrigin: Drag;
   private containers: any;
   private event: any;
+  private dragginNode: boolean;
+  private dragginCancas: boolean;
   constructor(cfg: any) {
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
@@ -32,6 +34,8 @@ class Flow extends G6.Graph {
     this.moduleName = 'Flow';
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
+    this.dragginNode = false;
+    this.dragginCancas = false;
     // mixin(this, BaseDom);
   }
 
@@ -54,6 +58,8 @@ class Flow extends G6.Graph {
     let dx: number;
     let dy: number;
     this.on('node:dragstart', (ev: any) => {
+      if (this.dragginCancas) return;
+      this.dragginNode = true;
       const { item } = ev;
       const model = item.getModel();
       node = item;
@@ -61,12 +67,17 @@ class Flow extends G6.Graph {
       dy = model.y - ev.y;
     });
     this.on('node:drag', (ev: any) => {
+      if (this.dragginCancas) return;
       this.update(node, {
         x: ev.x + dx,
         y: ev.y + dy,
       });
     });
     this.on('node:dragend', (ev: any) => {
+      setTimeout(() => {
+        this.dragginNode = false;
+      }, 500)
+      if (this.dragginCancas) return;
       node = undefined;
     });
   }
@@ -76,6 +87,8 @@ class Flow extends G6.Graph {
     // this.on('dragstart', (ev: any) => {
     // });
     this.on('drag', (ev: any) => {
+      if (this.dragginNode) return;
+      this.dragginCancas = true;
       if (!ev.item) {
         if (lastPoint) {
           this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
@@ -87,6 +100,10 @@ class Flow extends G6.Graph {
       }
     });
     this.on('dragend', (ev: any) => {// eslint-disable-line
+      setTimeout(() => {
+        this.dragginCancas = false;
+      }, 500)
+      if (this.dragginNode) return;
       lastPoint = undefined;
     });
   }
