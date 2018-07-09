@@ -11,10 +11,12 @@
 import Editor from './editor';
 import Itempannel from './itempannel';
 import Flow from './flow';
+import ToolBar from './toolbar';
 
 
 Editor.Itempannel = Itempannel;
 Editor.Flow = Flow;
+Editor.Toolbar = ToolBar;
 export default Editor;
 // export default {
 //   createG6,

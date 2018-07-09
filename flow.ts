@@ -92,6 +92,10 @@ class Flow extends G6.Graph {
     });
   }
 
+  on (type: string, func: any) {
+    super.on(type, func)
+  }
+
   onDrag() {
     this.dragNode();
     this.dragGraph();
@@ -139,6 +143,10 @@ class Flow extends G6.Graph {
     setTimeout(() => {
       this.onDrag();
     }, 50);
+  }
+  //  动态注册事件，由toolbar配置启动。
+  registerEvent() {
+
   }
 }
 

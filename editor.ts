@@ -51,11 +51,11 @@ class Editor extends Base {
   add(component: any) {
     if (typeof component !== 'object') return;
     this.modules[component.moduleName] = component;
-    this.addEvent(component);
+    this.addParseEvent(component);
     if (component.addEventTo) component.addEventTo(this);
   }
 
-  addEvent(component: any) {
+  addParseEvent(component: any) {
     console.log(`----register event ${component.moduleName}@@parse -----------`);
     this.addListener(`${component.moduleName}@@parse`, component.parse.bind(component));
   }
