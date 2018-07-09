@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-      "outDir": "../demos/my-app/src/dist/",
+      "outDir": "./dist/",
       "sourceMap": true,
-      "noImplicitAny": true,
+      "noImplicitAny": false,
       "module": "commonjs",
       "target": "es5",
-      "jsx": "react",
-      "types": ["node"]
   },
   "include": [
-      "./*.ts"
+    "*.tsx"
   ],
   "exclude": [
     "node_modules"

@@ -5,14 +5,12 @@
  * @modify date 2018-06-27 06:08:04
  * @desc [description]
 */
-import * as _ from 'lodash';
-
 
 import BaseDom from './dom';
 
 interface Options {
   container: string;
-  itemKey: string;
+  itemKey?: string;
 }
 
 class Itempannel extends BaseDom {

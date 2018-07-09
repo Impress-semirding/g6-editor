@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src';
+import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src/index';
 // import 'antd/dist/antd.css';
 
 export default class Editor extends React.Component {
@@ -29,10 +29,11 @@ export default class Editor extends React.Component {
   //   node[0].appendChild(div);
   // }
 
-  public componentDidMount() {
+  componentDidMount() {
     // 生成 G6 Editor 编辑器
     // const height = window.innerHeight - 38;
-    const editor = this.editor = new G6Editor({ container: 'editor' });
+    console.log(Flow)
+    this.editor = new G6Editor({ container: 'editor' });
     // const minimap = new G6Editor.Minimap({
     //   container: 'minimap',
     //   height: 120,
@@ -44,12 +45,7 @@ export default class Editor extends React.Component {
     // const contextmenu = new G6Editor.Contextmenu({
     //   container: 'contextmenu',
     // });
-    const itempannel = new Itempannel({
-      container: 'itempannel',
-      tpls: [
-
-      ],
-    });
+    const itempannel = new Itempannel({ container: 'itempannel' });
     const pages = document.getElementById('page');
     const page = new Flow({
       graph: {
@@ -204,16 +200,14 @@ export default class Editor extends React.Component {
     //   });
     // });
     // editor.add(minimap);
-    editor.add(toolbar);
+    this.editor.add(toolbar);
     // editor.add(contextmenu);
-    editor.add(itempannel);
+    this.editor.add(itempannel);
     // setTimeout(() => {
-    editor.emit('Itempannel@@parse', {});
-    editor.emit('Flow@@parse', {});
-    editor.emit('ToolBar@@parse', {});
+    this.editor.emit('Itempannel@@parse', {});
+    this.editor.emit('Flow@@parse', {});
+    this.editor.emit('ToolBar@@parse', {});
     this.page = page;
     // editor.add(detailpannel);
-
-    this.editor = editor;
   }
 }

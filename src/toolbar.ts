@@ -6,8 +6,6 @@
  * @desc [description]
 */
 
-import * as _ from 'lodash';
-
 import BaseDom from './dom';
 
 interface Options {
@@ -16,7 +14,7 @@ interface Options {
 }
 
 interface Datasets {
-  [propName: string]: Boolean;
+  [propName: string]: boolean;
 }
 
 class ToolBar extends BaseDom {

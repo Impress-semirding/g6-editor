@@ -5,7 +5,7 @@
  * @modify date 2018-06-27 06:07:54
  * @desc [description]
 */
-/* eslint-disable */
+
 export default class BaseDom {
   findDomById(container: string, node?: Document) {
     if (node) {

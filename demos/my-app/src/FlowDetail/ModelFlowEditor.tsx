@@ -15,7 +15,7 @@ import './modelFlowEditor.css';
 
 export default class ModelFlowEditor extends Editor {
 
-  public componentDidMount() {
+  componentDidMount() {
     super.componentDidMount();
   }
 

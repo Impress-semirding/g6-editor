@@ -8,7 +8,6 @@
 
 // /* eslint-disable */
 // declare module "@antv/g6";
-
 const G6 = require('@antv/g6')
 
 import GenNode from './genFlowNode';
@@ -62,24 +61,24 @@ class Flow extends G6.Graph {
       dy = model.y - ev.y;
     });
     this.on('node:drag', (ev: any) => {
-      node && this.update(node, {// eslint-disable-line
+      this.update(node, {
         x: ev.x + dx,
         y: ev.y + dy,
       });
     });
-    this.on('node:dragend', (ev: any) => {// eslint-disable-line
+    this.on('node:dragend', (ev: any) => {
       node = undefined;
     });
   }
 
   dragGraph() {
     let lastPoint: any;
-    this.on('dragstart', (ev: any) => {
-    });
+    // this.on('dragstart', (ev: any) => {
+    // });
     this.on('drag', (ev: any) => {
       if (!ev.item) {
         if (lastPoint) {
-          this && this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
+          this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
         }
         lastPoint = {
           x: ev.domX,
@@ -145,9 +144,9 @@ class Flow extends G6.Graph {
     }, 50);
   }
   //  动态注册事件，由toolbar配置启动。
-  registerEvent() {
+  // registerEvent() {
 
-  }
+  // }
 
   update(type: string, func: any) {
     super.update(type, func);

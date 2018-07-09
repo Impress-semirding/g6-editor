@@ -13,7 +13,6 @@ import Itempannel from './itempannel';
 import Flow from './flow';
 import ToolBar from './toolbar';
 
-
 export default Editor;
 export {
   Itempannel,

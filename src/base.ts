@@ -1,25 +1,18 @@
-/**
- * @author senir
- * @email 15251895266@163.com
- * @create date 2018-06-25 04:06:25
- * @modify date 2018-06-25 04:06:25
- * @desc [description]
-*/
-/* eslint-disable */
 const EventEmitter = require('wolfy87-eventemitter');
+// import EventEmitter = require("wolfy87-eventemitter");
+
 // import EventEmitter from 'wolfy87-eventemitter'
 
 export default class Base extends EventEmitter {
   protected _cfg: any;
-  protected destroyed: Boolean;
-  getDefaultCfg() {
-    return {};
-  }
-
+  protected destroyed: boolean;
   constructor(cfg: object) {
     super();
     const defaultCfg = this.getDefaultCfg();
     this._cfg = (<any>Object).assign({}, defaultCfg, cfg);
+  }
+  getDefaultCfg() {
+    return {};
   }
 
   get(name: string) {

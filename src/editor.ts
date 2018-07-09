@@ -11,16 +11,15 @@ interface Modules {
   [propName: string]: any;
 }
 
-
 class Editor extends Base {
-
   private modules: Modules;
   constructor(cfg: any) {
+    debugger;
     super(cfg);
     this.initContainer();
     this.modules = {};
   }
-  private initContainer() {
+  initContainer() {
     let container = this.get('container');
     if (!container) {
       // Compatible with id written
@@ -49,25 +48,27 @@ class Editor extends Base {
   };
 
   add(component: any) {
-    if (typeof component !== 'object') return;
+    if (typeof component !== 'object') {
+      return;
+    }
     this.modules[component.moduleName] = component;
     this.addParseEvent(component);
-    if (component.addEventTo) component.addEventTo(this);
+    if (component.addEventTo) {
+      component.addEventTo(this);
+    }
   }
 
   addParseEvent(component: any) {
-    console.log(`----register event ${component.moduleName}@@parse -----------`);
     this.addListener(`${component.moduleName}@@parse`, component.parse.bind(component));
   }
 
   emit(type: string, params: any) {
-    console.log(`----emit event ${type} -----------`);
     this.emitEvent(type, []);
   }
 
-  registerTemplateNodes(cfg: any) {
+  // registerTemplateNodes(cfg: any) {
 
-  }
+  // }
 }
 
 export default Editor;

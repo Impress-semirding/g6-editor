@@ -1,8 +1,16 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": ["tslint-react", "tslint-config-prettier"],
   "rules": {
     "object-literal-sort-keys": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "no-var-requires": false,
+    "variable-name": false,
+    "member-access": false,
+    "no-angle-bracket-type-assertion": false,
+    "jsdoc-format": false,
+    "interface-name": false,
+    "comment-format": false,
+    "array-type": false
   },
   "linterOptions": {
     "exclude": [
