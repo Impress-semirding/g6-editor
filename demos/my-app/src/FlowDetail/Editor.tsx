@@ -32,7 +32,6 @@ export default class Editor extends React.Component {
   componentDidMount() {
     // 生成 G6 Editor 编辑器
     // const height = window.innerHeight - 38;
-    console.log(Flow)
     this.editor = new G6Editor({ container: 'editor' });
     // const minimap = new G6Editor.Minimap({
     //   container: 'minimap',
@@ -155,13 +154,6 @@ export default class Editor extends React.Component {
         };
       },
     });
-    const scale = 1;
-    //   test case
-    // setInterval(() => {
-    //   scale -= 0.1;
-    //   page.zoom(scale);
-    // }, 8000);
-
 
     page.read({ nodes: [{
       shape: 'k-means',
@@ -186,20 +178,7 @@ export default class Editor extends React.Component {
     });
 
     this.editor.add(page);
-    // const detailpannel = new G6Editor.Detailpannel({
-    //   container: 'detailpannel',
-    // });
-    // page.on('afteritemselected', (ev) => {
-    //   this.setState({
-    //     selectedModel: ev.item.getModel(),
-    //   });
-    // });
-    // page.on('afterzoom', (ev) => {
-    //   this.setState({
-    //     curZoom: ev.updateMatrix[0],
-    //   });
-    // });
-    // editor.add(minimap);
+
     this.editor.add(toolbar);
     // editor.add(contextmenu);
     this.editor.add(itempannel);

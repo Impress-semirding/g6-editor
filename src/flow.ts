@@ -20,7 +20,7 @@ interface Drag {
 }
 
 class Flow extends G6.Graph {
-  // private moduleName: string;
+  private moduleName: string;
   private nodeMange: GenNode;
   private dragOrigin: Drag;
   private containers: any;
@@ -29,7 +29,7 @@ class Flow extends G6.Graph {
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
     super(graph);
-    // this.moduleName = 'Flow';
+    this.moduleName = 'Flow';
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     // mixin(this, BaseDom);
