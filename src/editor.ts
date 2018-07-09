@@ -14,7 +14,6 @@ interface Modules {
 class Editor extends Base {
   private modules: Modules;
   constructor(cfg: any) {
-    debugger;
     super(cfg);
     this.initContainer();
     this.modules = {};
