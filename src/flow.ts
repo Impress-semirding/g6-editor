@@ -160,6 +160,30 @@ class Flow extends G6.Net {
 
   read(data: any) {
     this.source(data.nodes, data.edges);
+    // 进入锚点切换到曲线添加模式
+    var dragging = false;
+    this.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.on('mouseenter', (ev) => {
+      var shape = ev.shape;
+      if(shape && shape.hasClass('anchor-point') && !dragging) {
+        this.beginAdd('edge', {
+          shape: 'polyLineFlow'
+        });
+      }
+    });
+    // 离开锚点切换回编辑模式
+    this.on('mouseleave', (ev) => {
+      var shape = ev.shape;
+      if(shape && shape.hasClass('anchor-point') && !dragging) {
+        this.changeMode('edit');
+      }
+    });
+    this.on('afteritemrender', (ev) => {
+      var item = ev.item;
+      if(item.get('type') === 'node'){
+        this.showAnchor(item);
+      }
+    });
     this.render();
     setTimeout(() => {
       this.onDrag();
