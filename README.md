@@ -3,5 +3,5 @@
 第一版本还在开发中，目前支持itempannel和toolbar。
 
 cd demos/my-app  
-npm install  
+yarn 
 npm start  

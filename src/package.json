@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "dependencies": {
-    "lodash": "^4.17.10"
+    "redux-undo": "^0.6.1",
+    "@antv/g6": "^2.0.4-beta.3"
   }
 }
