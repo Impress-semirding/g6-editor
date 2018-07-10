@@ -1,14 +1,5 @@
-/**
- * @author senir
- * @email 15251895266@163.com
- * @create date 2018-06-27 06:08:14
- * @modify date 2018-06-27 06:08:14
- * @desc [description]
-*/
 
-// /* eslint-disable */
-// declare module "@antv/g6";
-const G6 = require('@antv/g6')
+const G6 = require("G6")
 
 import GenNode from './genFlowNode';
 // import BaseDom from './dom';
@@ -19,7 +10,7 @@ interface Drag {
   clientY: number;
 }
 
-class Flow extends G6.Graph {
+class Flow extends G6.Net {
   private moduleName: string;
   private nodeMange: GenNode;
   private dragOrigin: Drag;
@@ -27,10 +18,13 @@ class Flow extends G6.Graph {
   private event: any;
   private dragginNode: boolean;
   private dragginCancas: boolean;
+  private _cfg: any;
   constructor(cfg: any) {
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
+    //  g6降级v1版本，需删除container
     super(graph);
+    this._cfg = graph;
     this.moduleName = 'Flow';
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
@@ -117,20 +111,20 @@ class Flow extends G6.Graph {
     this.dragGraph();
   }
 
-  onDrop(ev: any) {// eslint-disable-line
+  onDrop(ev: any) {
     ev.preventDefault();
     const clientX = ev.clientX;
     const clientY = ev.clientY;
     const shape = ev.dataTransfer.getData('shape');
     const extendId = ev.dataTransfer.getData('extendId');
-    this.nodeMange.extendModelCard(shape,
+    const node = this.nodeMange.extendModelCard(shape,
       { dragOrigin: this.dragOrigin, dragTarget: { clientX, clientY }, width: 184, height: 40 },
     extendId);
-    this.read(this.nodeMange.getData());
+    this.updates('node', node);
   }
 
   findDom() {
-    const { container } = this._cfg;
+    const { id: container } = this._cfg;
     this.containers = this.findDomById(container, null);
     this.addEventListener();
   }
@@ -153,9 +147,15 @@ class Flow extends G6.Graph {
     return document.getElementsByClassName(container);
   }
 
+  updates(type: string, node: any) {
+    this.add(type, node);
+    // this.render();
+  }
+
+
   read(data: any) {
-    // this.nodeMange.setData(data);
-    super.read(data);
+    this.source(data.nodes, data.edges);
+    this.render();
     setTimeout(() => {
       this.onDrag();
     }, 50);
@@ -175,11 +175,11 @@ class Flow extends G6.Graph {
 }
 
 
-Flow.registerNode = G6.registerNode;
-Flow.registerEdge = G6.registerEdge;
-Flow.registerGroup = G6.registerGroup;
-Flow.registerGuide = G6.registerGuide;
-Flow.registerBehaviour = G6.registerBehaviour;
+Flow.registerNode = G6.registNode;
+Flow.registerEdge = G6.registEdge;
+Flow.registerGroup = G6.registGroup;
+Flow.registerGuide = G6.registGuide;
+Flow.registerBehaviour = G6.registBehaviour;
 Flow.version = '0.1.0';
 
 export default Flow;

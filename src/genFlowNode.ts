@@ -8,6 +8,7 @@
 import Flow from './flow';
 import getTpl from './tpls';
 import Manage from './store/stateManage'
+const G6 = require("G6")
 
 
 class GenNode {
@@ -38,7 +39,8 @@ class GenNode {
     const x = clientX - oX - width / 2;
     const y = clientY - oY - height / 2;
     this.syncStore(id, shape, x, y)
-    this.nodes.push({ id, shape, x, y });
+    return { id, shape, x, y }
+    // this.nodes.push({ id, shape, x, y });
   }
 
   syncStore(id, shape, x, y) {
@@ -48,8 +50,8 @@ class GenNode {
   extendModelCard(shape: string,atrrs: any, extendId: string) {
     const tplAttrs = getTpl(shape);
     const id = new Date().getTime();
-    this.createData(id, atrrs, shape);
-    Flow.registerNode(shape, tplAttrs, extendId);
+    G6.registNode(shape, tplAttrs, extendId);
+    return this.createData(id, atrrs, shape);
   }
 }
 
