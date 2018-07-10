@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src/index';
 // import 'antd/dist/antd.css';
+const G6 = require("G6")
 
 export default class Editor extends React.Component {
   private editor: any;
@@ -33,22 +34,16 @@ export default class Editor extends React.Component {
     // 生成 G6 Editor 编辑器
     // const height = window.innerHeight - 38;
     this.editor = new G6Editor({ container: 'editor' });
-    // const minimap = new G6Editor.Minimap({
-    //   container: 'minimap',
-    //   height: 120,
-    //   width: 200,
-    // });
+
     const toolbar = new ToolBar({
       container: 'toolbar',
     });
-    // const contextmenu = new G6Editor.Contextmenu({
-    //   container: 'contextmenu',
-    // });
+
     const itempannel = new Itempannel({ container: 'itempannel' });
     const pages = document.getElementById('page');
     const page = new Flow({
       graph: {
-        container: 'page',
+        // container: pages,
         id: 'page',
         // fitView: 'autoZoom',
         height: pages.clientHeight,
@@ -58,10 +53,9 @@ export default class Editor extends React.Component {
     });
     const self = this;
 
-    Flow.registerNode('model-card', {
-      draw(item) {
-        const group = item.getGraphicGroup();
-        const model = item.getModel();
+    G6.registNode('model-card', {
+      draw(cfg, group) {
+        const model = cfg.model;
         const width = 184;
         const height = 40;
         const x = -width / 2;
