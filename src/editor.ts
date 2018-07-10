@@ -31,12 +31,6 @@ class Editor extends Base {
     } else {
       throw new Error('please set the container for the graph !');
     }
-    // const graphContainer = createNode('<div class="graph-container"></div>', {
-    //   position: 'relative',
-    // });
-    // container.appendChild(graphContainer);
-    // this.set('_containerDOM', container);
-    // this.set('_graphContainer', graphContainer);
   }
 
   addListener(type: string, func: any) : void {

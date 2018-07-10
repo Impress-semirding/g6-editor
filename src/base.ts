@@ -1,7 +1,12 @@
-const EventEmitter = require('wolfy87-eventemitter');
-// import EventEmitter = require("wolfy87-eventemitter");
+/**
+ * @author senir
+ * @email 15251895266@163.com
+ * @create date 2018-07-10 06:32:15
+ * @modify date 2018-07-10 06:32:15
+ * @desc [description]
+*/
 
-// import EventEmitter from 'wolfy87-eventemitter'
+const EventEmitter = require('wolfy87-eventemitter');
 
 export default class Base extends EventEmitter {
   protected _cfg: any;

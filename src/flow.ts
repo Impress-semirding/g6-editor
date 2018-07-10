@@ -1,8 +1,14 @@
+/**
+ * @author senir
+ * @email 15251895266@163.com
+ * @create date 2018-07-10 06:33:10
+ * @modify date 2018-07-10 06:33:10
+ * @desc [description]
+*/
 
 const G6 = require("G6")
 
 import GenNode from './genFlowNode';
-// import BaseDom from './dom';
 // import { mixin } from './util';
 
 interface Drag {
@@ -152,7 +158,6 @@ class Flow extends G6.Net {
     // this.render();
   }
 
-
   read(data: any) {
     this.source(data.nodes, data.edges);
     this.render();
@@ -169,7 +174,6 @@ class Flow extends G6.Net {
     super.translate(x, y);
   }
 }
-
 
 Flow.registerNode = G6.registNode;
 Flow.registerEdge = G6.registEdge;

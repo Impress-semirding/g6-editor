@@ -1,3 +1,11 @@
+/**
+ * @author senir
+ * @email 15251895266@163.com
+ * @create date 2018-07-10 06:33:59
+ * @modify date 2018-07-10 06:33:59
+ * @desc [description]
+*/
+
 interface ModelCard {
   type: string;
   label: string;

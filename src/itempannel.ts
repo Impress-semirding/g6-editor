@@ -75,16 +75,6 @@ class Itempannel extends BaseDom {
     ev.dataTransfer.setData('extendId', ev.target.dataset.extendid);
     this.event.emitEvent('Itempannel@@dragitem', [ev]);
   }
-
-  // setContainerAttr() {
-  //   const { containers } = this;
-  //   containers.addEventListener('drop', (event: any) => {
-  //     alert('drop');
-  //   });
-  //   containers.addEventListener('dragover', (event: any) => {
-  //     event.preventDefault();
-  //   });
-  // }
 }
 
 export default Itempannel;

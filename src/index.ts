@@ -5,9 +5,7 @@
  * @modify date 2018-06-27 06:08:09
  * @desc [description]
 */
-// import G6 from '@antv/g6';
-// import createG6 from './component';
-// import { genDom } from './util';
+
 import Editor from './editor';
 import Itempannel from './itempannel';
 import Flow from './flow';
