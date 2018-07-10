@@ -8,8 +8,6 @@
 import Flow from './flow';
 import getTpl from './tpls';
 import Manage from './store/stateManage'
-const G6 = require("G6")
-
 
 class GenNode {
   private _cfg: any;
@@ -50,7 +48,7 @@ class GenNode {
   extendModelCard(shape: string,atrrs: any, extendId: string) {
     const tplAttrs = getTpl(shape);
     const id = new Date().getTime();
-    G6.registNode(shape, tplAttrs, extendId);
+    Flow.registerNode(shape, tplAttrs, extendId);
     return this.createData(id, atrrs, shape);
   }
 }

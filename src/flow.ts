@@ -75,32 +75,32 @@ class Flow extends G6.Net {
       node = undefined;
     });
   }
-
-  dragGraph() {
-    let lastPoint: any;
-    // this.on('dragstart', (ev: any) => {
-    // });
-    this.on('drag', (ev: any) => {
-      if (this.dragginNode) return;
-      this.dragginCancas = true;
-      if (!ev.item) {
-        if (lastPoint) {
-          this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
-        }
-        lastPoint = {
-          x: ev.domX,
-          y: ev.domY,
-        };
-      }
-    });
-    this.on('dragend', (ev: any) => {// eslint-disable-line
-      setTimeout(() => {
-        this.dragginCancas = false;
-      }, 500)
-      if (this.dragginNode) return;
-      lastPoint = undefined;
-    });
-  }
+  //  g6 2.0拖拽，降级1.0.暂时不需要了
+  // dragGraph() {
+  //   let lastPoint: any;
+  //   // this.on('dragstart', (ev: any) => {
+  //   // });
+  //   this.on('drag', (ev: any) => {
+  //     if (this.dragginNode) return;
+  //     this.dragginCancas = true;
+  //     if (!ev.item) {
+  //       if (lastPoint) {
+  //         this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
+  //       }
+  //       lastPoint = {
+  //         x: ev.domX,
+  //         y: ev.domY,
+  //       };
+  //     }
+  //   });
+  //   this.on('dragend', (ev: any) => {// eslint-disable-line
+  //     setTimeout(() => {
+  //       this.dragginCancas = false;
+  //     }, 500)
+  //     if (this.dragginNode) return;
+  //     lastPoint = undefined;
+  //   });
+  // }
 
   on (type: string, func: any) {
     super.on(type, func)
@@ -108,7 +108,7 @@ class Flow extends G6.Net {
 
   onDrag() {
     this.dragNode();
-    this.dragGraph();
+    // this.dragGraph();
   }
 
   onDrop(ev: any) {
@@ -160,10 +160,6 @@ class Flow extends G6.Net {
       this.onDrag();
     }, 50);
   }
-  //  动态注册事件，由toolbar配置启动。
-  // registerEvent() {
-
-  // }
 
   update(type: string, func: any) {
     super.update(type, func);

@@ -1,8 +1,6 @@
 import * as React from 'react';
 
 import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src/index';
-// import 'antd/dist/antd.css';
-const G6 = require("G6")
 
 export default class Editor extends React.Component {
   private editor: any;
@@ -53,7 +51,7 @@ export default class Editor extends React.Component {
     });
     const self = this;
 
-    G6.registNode('model-card', {
+    Flow.registerNode('model-card', {
       draw(cfg, group) {
         const model = cfg.model;
         const width = 184;
