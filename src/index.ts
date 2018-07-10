@@ -19,10 +19,3 @@ export {
   Flow,
   ToolBar
 }
-// export default {
-//   createG6,
-//   ...G6,
-//   genDom,
-//   Editor,
-// };
-

@@ -71,8 +71,8 @@ export default class Editor extends React.Component {
         // self.genDom({ width, height, x: px + x, y: py + y });
         const keyShape = group.addShape('rect', {
           attrs: {
-            x: 10,
-            y: 10,
+            x,
+            y,
             width,
             height,
             radius: borderRadius,

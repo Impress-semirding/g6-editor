@@ -32,11 +32,49 @@ class ToolBar extends BaseDom {
     this.datasets = {};
   }
 
+
+  private undo() {
+    alert('developing');
+  }
+
+  private redo() {
+    alert('redo')
+  }
+
+  private copy() {
+    alert('copy')
+  }
+
+  private paste() {
+    alert('paste')
+  }
+
+  private delete() {
+    alert('delete');
+  }
+
+  private zoomIn() {
+    alert('zoomIn')
+  }
+
+  private zoomOut() {
+    alert('zoomOut')
+  }
+
+  private autoZoom() {
+    alert('autoZoom')
+  }
+
+  private resetZoom() {
+    alert('resetZoom')
+  }
+
   addEventListener() {
-    // const nodes = this.nodes;
-    // for (let i = 0; i < nodes.length; i++) {
-    //   console.log(nodes[i]);
-    // }
+    const nodes = this.nodes;
+    for (let i = 0; i < nodes.length; i++) {
+      const type = nodes[i].dataset.command;
+      nodes[i].addEventListener('click', this[type], false);
+    }
   }
 
   addEventTo(event: any) {
