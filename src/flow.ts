@@ -63,7 +63,7 @@ class Flow extends G6.Net {
   }
 
   changeMode(type: string) {
-    super.changeMode()
+    super.changeMode(type)
   }
 
   dragNode() {
