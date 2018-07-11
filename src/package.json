@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.ts",
   "dependencies": {
-    "redux-undo": "^0.6.1",
-    "@antv/g6": "^2.0.4-beta.3"
+    "@antv/g6": "^2.0.4-beta.3",
+    "redux-undo": "^0.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.5.2"
   }
 }

@@ -5,12 +5,10 @@
  * @modify date 2018-07-10 06:33:10
  * @desc [description]
 */
-declare var require: any
 
 const G6 = require("G6")
 
 import GenNode from './genFlowNode';
-// import { mixin } from './util';
 
 interface Drag {
   clientX: number;
@@ -28,6 +26,11 @@ class Flow extends G6.Net {
   private _cfg: any;
 
   static registerNode = G6.registNode;
+  static registerEdge = G6.registEdge;
+  static registerGroup = G6.registGroup;
+  static registerGuide = G6.registGuide;
+  static registerBehaviour = G6.registBehaviour;
+  static version = '0.1.0';
   constructor(cfg: any) {
     super(cfg.graph);
     const { graph } = cfg;
@@ -201,12 +204,5 @@ class Flow extends G6.Net {
     super.translate(x, y);
   }
 }
-
-// Flow.registerNode = G6.registNode;
-// Flow.registerEdge = G6.registEdge;
-// Flow.registerGroup = G6.registGroup;
-// Flow.registerGuide = G6.registGuide;
-// Flow.registerBehaviour = G6.registBehaviour;
-// Flow.version = '0.1.0';
 
 export default Flow;

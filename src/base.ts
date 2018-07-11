@@ -5,10 +5,6 @@
  * @modify date 2018-07-10 06:32:15
  * @desc [description]
 */
-
-declare var require: any
-
-
 const EventEmitter = require('wolfy87-eventemitter');
 
 export default class Base extends EventEmitter {
