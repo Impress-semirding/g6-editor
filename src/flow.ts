@@ -26,6 +26,8 @@ class Flow extends G6.Net {
   private dragginNode: boolean;
   private dragginCancas: boolean;
   private _cfg: any;
+
+  static registerNode = G6.registNode;
   constructor(cfg: any) {
     super(cfg.graph);
     const { graph } = cfg;
@@ -200,11 +202,11 @@ class Flow extends G6.Net {
   }
 }
 
-Flow.registerNode = G6.registNode;
-Flow.registerEdge = G6.registEdge;
-Flow.registerGroup = G6.registGroup;
-Flow.registerGuide = G6.registGuide;
-Flow.registerBehaviour = G6.registBehaviour;
-Flow.version = '0.1.0';
+// Flow.registerNode = G6.registNode;
+// Flow.registerEdge = G6.registEdge;
+// Flow.registerGroup = G6.registGroup;
+// Flow.registerGuide = G6.registGuide;
+// Flow.registerBehaviour = G6.registBehaviour;
+// Flow.version = '0.1.0';
 
 export default Flow;
