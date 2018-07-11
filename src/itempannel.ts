@@ -16,7 +16,7 @@ interface Options {
 class Itempannel extends BaseDom {
   private event: any;
   private options: Options;
-  private moduleName: string;
+  private readonly moduleName: string = 'Itempannel';
   private datasets: Array<number>;
   private containers: any;
   private nodes: any;
@@ -24,8 +24,6 @@ class Itempannel extends BaseDom {
     super();
     this.event = null;
     this.options = options;
-    this.moduleName = 'Itempannel';
-    // this.init();
     this.datasets = [];
     this.containers = null;
     this.nodes = [];
@@ -36,14 +34,12 @@ class Itempannel extends BaseDom {
     for (let i = 0; i < nodes.length; i++) {
       nodes[i].setAttribute('draggable', true);
       nodes[i].addEventListener('dragstart', this.ondragstart.bind(this), false);
-      // nodes[i].addEventListener('dragstart', this.ondragstart, false);
     }
   }
 
   findDom() {
     const { container, itemKey } = this.options;
     this.containers = this.findDomById(container);
-      // const containers = ReactDOM.findDOMNode(ref);
     const className = itemKey || 'getItem';
     this.nodes = this.findDomByClassName(className, this.containers);
   }
@@ -60,9 +56,7 @@ class Itempannel extends BaseDom {
   parse() {
     this.findDom();
     this.genDatasets();
-    // this.setContainerAttr();
     this.addEventListener();
-    // this.findDom();
   }
 
   addEventTo(event: any) {
@@ -70,7 +64,6 @@ class Itempannel extends BaseDom {
   }
 
   ondragstart(ev: any) {
-    console.log('---------正在drag---------');
     ev.dataTransfer.setData('shape', ev.target.dataset.shape);
     ev.dataTransfer.setData('extendId', ev.target.dataset.extendid);
     this.event.emitEvent('Itempannel@@dragitem', [ev]);

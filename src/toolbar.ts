@@ -20,7 +20,7 @@ interface Datasets {
 class ToolBar extends BaseDom {
   private event: any;
   private options: Options;
-  private  moduleName: string;
+  private readonly moduleName: string = 'ToolBar';
   private containers: HTMLElement;
   private nodes: any;
   private datasets: Datasets;
@@ -28,7 +28,6 @@ class ToolBar extends BaseDom {
     super();
     this.event = null;
     this.options = options;
-    this.moduleName = 'ToolBar';
     this.datasets = {};
   }
 

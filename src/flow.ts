@@ -18,7 +18,7 @@ interface Drag {
 }
 
 class Flow extends G6.Net {
-  private moduleName: string;
+  private readonly moduleName: string = 'Flow';
   private nodeMange: GenNode;
   private dragOrigin: Drag;
   private containers: any;
@@ -27,12 +27,11 @@ class Flow extends G6.Net {
   private dragginCancas: boolean;
   private _cfg: any;
   constructor(cfg: any) {
+    super(cfg.graph);
     const { graph } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
     //  g6降级v1版本，需删除container
-    super(graph);
     this._cfg = graph;
-    this.moduleName = 'Flow';
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     this.dragginNode = false;
