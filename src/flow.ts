@@ -5,6 +5,7 @@
  * @modify date 2018-07-10 06:33:10
  * @desc [description]
 */
+declare var require: any
 
 const G6 = require("G6")
 
@@ -36,7 +37,10 @@ class Flow extends G6.Net {
     this.dragOrigin = null;
     this.dragginNode = false;
     this.dragginCancas = false;
-    // mixin(this, BaseDom);
+  }
+
+  add(type: string, node: any) {
+    super.add(type, node);
   }
 
   addEventListener() {
@@ -51,6 +55,14 @@ class Flow extends G6.Net {
 
   addEventTo(event: any) {
     this.event = event;
+  }
+
+  beginAdd(type: string, attr: any) {
+    super.beginAdd(type)
+  }
+
+  changeMode(type: string) {
+    super.changeMode()
   }
 
   dragNode() {
@@ -81,32 +93,6 @@ class Flow extends G6.Net {
       node = undefined;
     });
   }
-  //  g6 2.0拖拽，降级1.0.暂时不需要了
-  // dragGraph() {
-  //   let lastPoint: any;
-  //   // this.on('dragstart', (ev: any) => {
-  //   // });
-  //   this.on('drag', (ev: any) => {
-  //     if (this.dragginNode) return;
-  //     this.dragginCancas = true;
-  //     if (!ev.item) {
-  //       if (lastPoint) {
-  //         this.translate(ev.domX - lastPoint.x, ev.domY - lastPoint.y);
-  //       }
-  //       lastPoint = {
-  //         x: ev.domX,
-  //         y: ev.domY,
-  //       };
-  //     }
-  //   });
-  //   this.on('dragend', (ev: any) => {// eslint-disable-line
-  //     setTimeout(() => {
-  //       this.dragginCancas = false;
-  //     }, 500)
-  //     if (this.dragginNode) return;
-  //     lastPoint = undefined;
-  //   });
-  // }
 
   on (type: string, func: any) {
     super.on(type, func)
@@ -114,7 +100,6 @@ class Flow extends G6.Net {
 
   onDrag() {
     this.dragNode();
-    // this.dragGraph();
   }
 
   onDrop(ev: any) {
@@ -124,9 +109,15 @@ class Flow extends G6.Net {
     const shape = ev.dataTransfer.getData('shape');
     const extendId = ev.dataTransfer.getData('extendId');
     const node = this.nodeMange.extendModelCard(shape,
-      { dragOrigin: this.dragOrigin, dragTarget: { clientX, clientY }, width: 184, height: 40 },
+      {
+        dragOrigin: this.dragOrigin,
+        dragTarget: { clientX, clientY
+      },
+      width: 184,
+      height: 40
+    },
     extendId);
-    this.updates('node', node);
+    this.add('node', node);
   }
 
   findDom() {
@@ -153,12 +144,23 @@ class Flow extends G6.Net {
     return document.getElementsByClassName(container);
   }
 
-  updates(type: string, node: any) {
-    this.add(type, node);
-    // this.render();
+  showAnchor(obj: any) {
+    super.showAnchor(obj);
   }
 
-  read(data: any) {
+  source(nodes: Array<any>, edges: Array<any>) {
+    super.source(nodes, edges);
+  }
+
+  removeBehaviour(arr: Array<string>) {
+    super.removeBehaviour(arr);
+  }
+
+  public render() {
+    super.render();
+  }
+
+  public read(data: any) {
     this.source(data.nodes, data.edges);
     // 进入锚点切换到曲线添加模式
     var dragging = false;

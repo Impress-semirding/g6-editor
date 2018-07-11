@@ -49,7 +49,7 @@ export default class Editor extends React.Component {
       },
       noEndEdge: false,
     });
-    const self = this;
+    // const self = this;
 
     Flow.registerNode('model-card', {
       draw(cfg, group) {
