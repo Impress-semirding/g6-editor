@@ -5,7 +5,6 @@
  * @modify date 2018-06-27 06:08:04
  * @desc [description]
 */
-
 import BaseDom from './dom';
 
 interface Options {
@@ -32,8 +31,9 @@ class Itempannel extends BaseDom {
   addEventListener() {
     const nodes = this.nodes;
     for (let i = 0; i < nodes.length; i++) {
-      nodes[i].setAttribute('draggable', true);
-      nodes[i].addEventListener('dragstart', this.ondragstart.bind(this), false);
+      // nodes[i].setAttribute('draggable', true);
+      // nodes[i].addEventListener('dragstart', this.ondragstart.bind(this), false);
+      nodes[i].addEventListener('click', this.onSelectMenu.bind(this), false);
     }
   }
 
@@ -51,6 +51,11 @@ class Itempannel extends BaseDom {
       // const dataset = Object.assign({}, nodes[i.dataset]);
       this.datasets.push(dataset);
     }
+  }
+
+  onSelectMenu(ev) {
+    const dataset = ev.target.dataset;
+    this.event.emitEvent('Itempannel@@command', [dataset])
   }
 
   parse() {
