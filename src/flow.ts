@@ -258,6 +258,15 @@ class Flow extends G6.Net {
         this.updo();
         this.refresh();
       })
+      this.event.addListener('@redo', (ev) => {
+        this.redo();
+        this.refresh();
+      })
+
+      this.event.addListener('@dragmode', (ev) => {
+        this.changeMode('drag');
+      })
+
     }, 1000)
 
     this.render();

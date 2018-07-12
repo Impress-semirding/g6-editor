@@ -44,6 +44,10 @@ class ToolBar extends BaseDom {
     alert('copy')
   }
 
+  private dragmode() {
+    this.event.emitEvent('@dragmode', [])
+  }
+
   private paste() {
     alert('paste')
   }

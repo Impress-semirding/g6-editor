@@ -16,6 +16,7 @@ export default class ToolBar extends React.Component {
       <i data-command="zoomOut" className="command iconfont icon-zoom-out-o" title="缩小" />
       <i data-command="autoZoom" className="command iconfont icon-fit" title="适应画布" />
       <i data-command="resetZoom" className="command iconfont icon-actual-size-o" title="实际尺寸" />
+      <i data-command="dragmode" className="command iconfont icon-actual-size-o" title="drag" />
       <span className="separator" />
       {/* <i data-command="toBack" className="command iconfont icon-to-back" title="层级后置" /> */}
       {/* <i data-command="toFront" className="command iconfont icon-to-front" title="层级前置" /> */}
