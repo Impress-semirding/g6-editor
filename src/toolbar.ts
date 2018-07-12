@@ -24,6 +24,7 @@ class ToolBar extends BaseDom {
   private containers: HTMLElement;
   private nodes: any;
   private datasets: Datasets;
+  private selected: any;
   constructor(options: any) {
     super();
     this.event = null;
@@ -31,9 +32,8 @@ class ToolBar extends BaseDom {
     this.datasets = {};
   }
 
-
   private undo() {
-    alert('developing');
+    this.event.emitEvent('@updo', []);
   }
 
   private redo() {
@@ -49,7 +49,8 @@ class ToolBar extends BaseDom {
   }
 
   private delete() {
-    alert('delete');
+    const { selected: { id } } = this;
+    this.event.emitEvent('@delete_node', [id]);
   }
 
   private zoomIn() {
@@ -72,7 +73,7 @@ class ToolBar extends BaseDom {
     const nodes = this.nodes;
     for (let i = 0; i < nodes.length; i++) {
       const type = nodes[i].dataset.command;
-      nodes[i].addEventListener('click', this[type], false);
+      nodes[i].addEventListener('click', this[type].bind(this), false);
     }
   }
 
@@ -100,10 +101,21 @@ class ToolBar extends BaseDom {
     }
   }
 
+  listeningNode() {
+    this.event.addListener(`${this.moduleName}@@listen_node`, (ev: any) => {
+      this.setfocus(ev);
+    });
+  }
+
   parse() {
     this.findDom();
     this.genDatasets();
     this.addEventListener();
+    this.listeningNode();
+  }
+
+  setfocus(node) {
+    this.selected = node;
   }
 }
 

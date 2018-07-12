@@ -46,6 +46,7 @@ export default class Editor extends React.Component {
         // fitView: 'autoZoom',
         height: pages.clientHeight,
         width: pages.clientWidth,
+        rollback: true,
       },
       noEndEdge: false,
     });
@@ -59,7 +60,8 @@ export default class Editor extends React.Component {
         const x = -width / 2;
         const y = -height / 2;
         const borderRadius = 4;
-        // const { x: px, y: py } = item.model;
+        const { x: px, y: py } = model;
+        console.log(model)
         // self.genDom({ width, height, x: px + x, y: py + y });
         const keyShape = group.addShape('rect', {
           attrs: {
@@ -142,7 +144,7 @@ export default class Editor extends React.Component {
     page.read({ nodes: [{
       shape: 'k-means',
       id: 'node1',
-      x: 100,
+      x: 20,
       y: 100,
     },
     {

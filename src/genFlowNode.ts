@@ -34,15 +34,15 @@ class GenNode {
       width,
       height
     } = attrs;
-    const x = clientX - oX - width / 2;
-    const y = clientY - oY - height / 2;
-    this.syncStore(id, shape, x, y)
-    return { id, shape, x, y }
+    const x = clientX - oX - width;
+    const y = clientY - oY - height;
+    // this.syncStore(id, shape, x + 90, y + 80)
+    return { id: id.toString(), shape, x, y};
   }
 
-  syncStore(id, shape, x, y) {
-    this.manage.addNode({ id, shape, x, y });
-  }
+  // syncStore(id, shape, x, y) {
+  //   this.manage.addNode({ id, shape, x, y });
+  // }
   //  暂时只支持node节点模版
   extendModelCard(shape: string,atrrs: any, extendId: string) {
     const tplAttrs = getTpl(shape);

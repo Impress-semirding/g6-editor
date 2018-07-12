@@ -44,25 +44,44 @@ class Flow extends G6.Net {
   }
 
   add(type: string, node: any) {
-    super.add(type, node);
+    // super.add(type, node);
+    super.add(type, node)
+    // this.render();
   }
 
   addEventListener() {
     const { containers } = this;
-    containers.addEventListener('dragover', (ev: any) => { ev.preventDefault(); }, false);
-    containers.addEventListener('drop', this.onDrop.bind(this), false);
-    this.event.addListener('Itempannel@@dragitem', (ev: any) => {
-      const { clientX, clientY } = ev;
-      this.dragOrigin = { clientX, clientY };
-    });
+    // containers.addEventListener('dragover', (ev: any) => { ev.preventDefault(); }, false);
+    // containers.addEventListener('drop', this.onDrop.bind(this), false);
+    // this.event.addListener('Itempannel@@dragitem', (ev: any) => {
+    //   const { clientX, clientY } = ev;
+    //   this.dragOrigin = { clientX, clientY };
+    // });
+    this.event.addListener(`Itempannel@@command`, this.addWithCommand.bind(this));
+
   }
 
   addEventTo(event: any) {
     this.event = event;
   }
 
-  beginAdd(type: string, attr: any) {
-    super.beginAdd(type)
+  addWithCommand(ev) {
+    const shape = ev.shape;
+    const extendId = ev.extendid;
+    const node = this.nodeMange.extendModelCard(shape,
+      {
+        dragOrigin: { clientX: 50, clientY: 50 },
+        dragTarget: { clientX: 100, clientY: 100 },
+        width: 184,
+        height: 40
+      },
+      extendId
+    );
+    this.beginAdd('node', node);
+  }
+
+  beginAdd(type: string, node: any) {
+    super.beginAdd(type, node);
   }
 
   changeMode(type: string) {
@@ -121,7 +140,14 @@ class Flow extends G6.Net {
       height: 40
     },
     extendId);
-    this.add('node', node);
+    // this.add('node', node);
+    // this.refresh();
+    this.beginAdd('node', node);
+    var event = document.createEvent('MouseEvents');
+    const { screenX, screenY, clientX: x, clientY: y } = ev;
+    event.initMouseEvent('mouseup', true, true, document.defaultView, 0, screenX, screenY, x, y, false, false, false, false, 0 ,null);
+
+    document.getElementById('canvas_2').dispatchEvent(event);
   }
 
   findDom() {
@@ -190,6 +216,24 @@ class Flow extends G6.Net {
         this.showAnchor(item);
       }
     });
+    this.on('click', (ev) => {
+      if (ev.itemType === 'node') {
+        this.event.emitEvent('ToolBar@@listen_node', [ev.item._attrs]);
+      }
+    })
+
+    setTimeout(() => {
+      this.event.addListener('@delete_node', (ev: any) => {
+        const id = ev;
+        this.remove(id);
+        this.refresh();
+      });
+      this.event.addListener('@updo', (ev) => {
+        this.updo();
+        this.refresh();
+      })
+    }, 1000)
+
     this.render();
     setTimeout(() => {
       this.onDrag();
