@@ -212,8 +212,15 @@ class Flow extends G6.Net {
   public read(data: any) {
     this.source(data.nodes, data.edges);
     // 进入锚点切换到曲线添加模式
+    // 第五️步：编辑交互变形
     var dragging = false;
     this.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.on('dragstart', function(ev){
+      dragging = true;
+    });
+    this.on('dragend', function(ev){
+      dragging = false;
+    });
     this.on('mouseenter', (ev) => {
       var shape = ev.shape;
       if(shape && shape.hasClass('anchor-point') && !dragging) {
