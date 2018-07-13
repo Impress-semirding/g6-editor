@@ -33,15 +33,16 @@ class ToolBar extends BaseDom {
   }
 
   private undo() {
-    this.event.emitEvent('@updo', []);
+    alert('undo暂不支持，稍后')
+    // this.event.emitEvent('@updo', []);
   }
 
   private redo() {
-    alert('redo')
+    alert('redo，暂不支持，稍后')
   }
 
   private copy() {
-    alert('copy')
+    alert('copy暂不支持，稍后')
   }
 
   private dragmode() {
@@ -49,7 +50,7 @@ class ToolBar extends BaseDom {
   }
 
   private paste() {
-    alert('paste')
+    alert('paste暂不支持，稍后')
   }
 
   private delete() {
@@ -58,19 +59,19 @@ class ToolBar extends BaseDom {
   }
 
   private zoomIn() {
-    alert('zoomIn')
+    this.event.emitEvent('@zoomIn', [])
   }
 
   private zoomOut() {
-    alert('zoomOut')
+    this.event.emitEvent('@zoomOut', [])
   }
 
   private autoZoom() {
-    alert('autoZoom')
+    this.event.emitEvent('@zoomReset', [1])
   }
 
   private resetZoom() {
-    alert('resetZoom')
+    this.event.emitEvent('@zoomReset', [1])
   }
 
   addEventListener() {

@@ -153,6 +153,7 @@ class Flow extends G6.Net {
     extendId);
     const { x, y } = node;
     const position = this.mapGrapPosition({ x, y})
+    debugger;
     const nextNode = {
       ...node,
       ...position
@@ -265,6 +266,21 @@ class Flow extends G6.Net {
 
       this.event.addListener('@dragmode', (ev) => {
         this.changeMode('drag');
+      })
+
+      this.event.addListener('@zoomIn', (ev) => {
+        const scale = this.getScale();
+        this._zoom(scale + 0.5)
+        this.refresh()
+      })
+      this.event.addListener('@zoomOut', (ev) => {
+        const scale = this.getScale();
+        this._zoom(scale - 0.5)
+        this.refresh()
+      })
+      this.event.addListener('@zoomReset', (ev) => {
+        this._zoom(1)
+        this.refresh()
       })
 
     }, 1000)
