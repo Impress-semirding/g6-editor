@@ -24,6 +24,7 @@ class Flow extends G6.Net {
   private dragginNode: boolean;
   private dragginCancas: boolean;
   private _cfg: any;
+  private domClick: boolean = false;
 
   static registerNode = G6.registNode;
   static registerEdge = G6.registEdge;
@@ -33,10 +34,11 @@ class Flow extends G6.Net {
   static version = '0.1.0';
   constructor(cfg: any) {
     super(cfg.graph);
-    const { graph } = cfg;
+    const { graph, domClick } = cfg;
     // super(Object.assign({}, graph, { plugins: [grid] }));
     //  g6降级v1版本，需删除container
     this._cfg = graph;
+    this.domClick = domClick || false;
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     this.dragginNode = false;
@@ -44,9 +46,7 @@ class Flow extends G6.Net {
   }
 
   add(type: string, node: any) {
-    // super.add(type, node);
     super.add(type, node)
-    // this.render();
   }
 
   addEventListener() {
@@ -153,21 +153,12 @@ class Flow extends G6.Net {
     extendId);
     const { x, y } = node;
     const position = this.mapGrapPosition({ x, y})
-    debugger;
     const nextNode = {
       ...node,
       ...position
     }
     this.add('node', nextNode);
     this.refresh();
-    // this.beginAdd('node', node);
-    // this.getScale();
-    // debugger;
-    // var event = document.createEvent('MouseEvents');
-    // const { screenX, screenY, clientX: x, clientY: y } = ev;
-    // event.initMouseEvent('mouseup', true, true, document.defaultView, 0, screenX, screenY, x, y, false, false, false, false, 0 ,null);
-
-    // document.getElementById('canvas_2').dispatchEvent(event);
   }
 
   findDom() {
@@ -244,6 +235,10 @@ class Flow extends G6.Net {
       }
     });
     this.on('click', (ev) => {
+      const { item: { _attrs: { id }} } = ev;
+      if (this.domClick) {
+        document.getElementById(`${id}_dom`).click()
+      }
       if (ev.itemType === 'node') {
         this.event.emitEvent('ToolBar@@listen_node', [ev.item._attrs]);
       }

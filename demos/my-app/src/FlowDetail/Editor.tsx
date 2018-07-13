@@ -12,27 +12,30 @@ export default class Editor extends React.Component {
     };
   }
 
-  // genDom(params) {
-  //   const { width, height, x, y } = params;
-  //   const node = document.getElementsByClassName('graph-container-html-Elements');
-  //   const div = document.createElement('div');
-  //   div.innerHTML = '我是dom节点哟';
-  //   div.style.display = 'block';
-  //   div.style.position = 'absolute';
-  //   div.style.width = `${width}px`;
-  //   div.style.height = `${height}px`;
-  //   div.style.left = `${x}px`;
-  //   div.style.top = `${y}px`;
-  //   div.style.background = 'rgba(1, 1, 1, 0.3)';
-  //   div.addEventListener('click', (e) => { alert(1111); });
-  //   node[0].appendChild(div);
-  // }
+  genDom(id: string, params: any) {
+    const { width, height, x, y } = params;
+    const dom = document.getElementById(`${id}_dom`);
+    if (dom) {
+      dom.style.left = `${x}px`;
+      dom.style.top = `${y}px`;
+    } else {
+      const node = document.getElementsByClassName('graph-container-html-Elements');
+      const div = document.createElement('div');
+      div.id = `${id}_dom`;
+      div.style.display = 'block';
+      div.style.position = 'absolute';
+      div.style.width = `${width}px`;
+      div.style.height = `${height}px`;
+      div.style.left = `${x}px`;
+      div.style.top = `${y}px`;
+      div.style.background = 'rgba(1, 1, 1, 0.3)';
+      div.addEventListener('click', (e) => { alert(1111); });
+      node[0].appendChild(div);
+    }
+  }
 
   componentDidMount() {
-    // 生成 G6 Editor 编辑器
-    // const height = window.innerHeight - 38;
     this.editor = new G6Editor({ container: 'editor' });
-
     const toolbar = new ToolBar({
       container: 'toolbar',
     });
@@ -41,29 +44,25 @@ export default class Editor extends React.Component {
     const pages = document.getElementById('page');
     const page = new Flow({
       graph: {
-        // container: pages,
         id: 'page',
-        // fitView: 'autoZoom',
         height: pages.clientHeight,
         width: pages.clientWidth,
         rollback: true,
       },
+      domClick: true,
       noEndEdge: false,
     });
-    // const self = this;
 
+    const self = this;
     Flow.registerNode('model-card', {
       draw(cfg, group) {
         const model = cfg.model;
         const width = 184;
         const height = 40;
         const { x, y } = { x: 0, y: 0 };
-        // const x = -width / 2;
-        // const y = -height / 2;
         const borderRadius = 4;
-        // const { x: px, y: py } = model;
-        console.log(model)
-        // self.genDom({ width, height, x: px + x, y: py + y });
+        const { id, x: fx, y: fy } = model;
+        self.genDom(id, { width, height, x: fx, y: fy });
         const keyShape = group.addShape('rect', {
           attrs: {
             x,
@@ -133,7 +132,6 @@ export default class Editor extends React.Component {
       }
     });
 
-
     page.edge({
       style() {
         return {
@@ -169,7 +167,6 @@ export default class Editor extends React.Component {
     this.editor.add(toolbar);
     // editor.add(contextmenu);
     this.editor.add(itempannel);
-    // setTimeout(() => {
     this.editor.emit('Itempannel@@parse', {});
     this.editor.emit('Flow@@parse', {});
     this.editor.emit('ToolBar@@parse', {});
