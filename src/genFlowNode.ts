@@ -35,7 +35,7 @@ class GenNode {
       height
     } = attrs;
     const x = clientX - oX - width;
-    const y = clientY - oY - height;
+    const y = clientY - oY + height / 2;
     // this.syncStore(id, shape, x + 90, y + 80)
     return { id: id.toString(), shape, x, y};
   }

@@ -37,7 +37,7 @@ export default class Editor extends React.Component {
       container: 'toolbar',
     });
 
-    const itempannel = new Itempannel({ container: 'itempannel' });
+    const itempannel = new Itempannel({ container: 'itempannel', interactiveType: 'drag' });
     const pages = document.getElementById('page');
     const page = new Flow({
       graph: {
@@ -57,10 +57,11 @@ export default class Editor extends React.Component {
         const model = cfg.model;
         const width = 184;
         const height = 40;
-        const x = -width / 2;
-        const y = -height / 2;
+        const { x, y } = { x: 0, y: 0 };
+        // const x = -width / 2;
+        // const y = -height / 2;
         const borderRadius = 4;
-        const { x: px, y: py } = model;
+        // const { x: px, y: py } = model;
         console.log(model)
         // self.genDom({ width, height, x: px + x, y: py + y });
         const keyShape = group.addShape('rect', {
@@ -142,9 +143,9 @@ export default class Editor extends React.Component {
     });
 
     page.read({ nodes: [{
-      shape: 'k-means',
+      shape: 'k-mmmm',
       id: 'node1',
-      x: 20,
+      x: 0,
       y: 100,
     },
     {

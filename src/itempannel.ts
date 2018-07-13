@@ -11,6 +11,7 @@ import BaseDom from './dom';
 interface Options {
   container: string;
   itemKey?: string;
+  interactiveType?: string;
 }
 
 class Itempannel extends BaseDom {

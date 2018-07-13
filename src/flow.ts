@@ -51,12 +51,12 @@ class Flow extends G6.Net {
 
   addEventListener() {
     const { containers } = this;
-    // containers.addEventListener('dragover', (ev: any) => { ev.preventDefault(); }, false);
-    // containers.addEventListener('drop', this.onDrop.bind(this), false);
-    // this.event.addListener('Itempannel@@dragitem', (ev: any) => {
-    //   const { clientX, clientY } = ev;
-    //   this.dragOrigin = { clientX, clientY };
-    // });
+    containers.addEventListener('dragover', (ev: any) => { ev.preventDefault(); }, false);
+    containers.addEventListener('drop', this.onDrop.bind(this), false);
+    this.event.addListener('Itempannel@@dragitem', (ev: any) => {
+      const { clientX, clientY } = ev;
+      this.dragOrigin = { clientX, clientY };
+    });
     this.event.addListener(`Itempannel@@command`, this.addWithCommand.bind(this));
 
   }
@@ -86,6 +86,17 @@ class Flow extends G6.Net {
 
   changeMode(type: string) {
     super.changeMode(type)
+  }
+
+  getViewPortBox() {
+    return super.getViewPortBox();
+  }
+
+  mapGrapPosition(dom: any) {
+    const { x, y } = dom;
+    const scale = this.getScale();
+    const { minX, minY, maxX, maxY } = this.getViewPortBox();
+    return { x: x / scale + minX, y: y / scale + minY }
   }
 
   dragNode() {
@@ -140,14 +151,22 @@ class Flow extends G6.Net {
       height: 40
     },
     extendId);
-    // this.add('node', node);
-    // this.refresh();
-    this.beginAdd('node', node);
-    var event = document.createEvent('MouseEvents');
-    const { screenX, screenY, clientX: x, clientY: y } = ev;
-    event.initMouseEvent('mouseup', true, true, document.defaultView, 0, screenX, screenY, x, y, false, false, false, false, 0 ,null);
+    const { x, y } = node;
+    const position = this.mapGrapPosition({ x, y})
+    const nextNode = {
+      ...node,
+      ...position
+    }
+    this.add('node', nextNode);
+    this.refresh();
+    // this.beginAdd('node', node);
+    // this.getScale();
+    // debugger;
+    // var event = document.createEvent('MouseEvents');
+    // const { screenX, screenY, clientX: x, clientY: y } = ev;
+    // event.initMouseEvent('mouseup', true, true, document.defaultView, 0, screenX, screenY, x, y, false, false, false, false, 0 ,null);
 
-    document.getElementById('canvas_2').dispatchEvent(event);
+    // document.getElementById('canvas_2').dispatchEvent(event);
   }
 
   findDom() {
