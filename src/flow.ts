@@ -240,7 +240,9 @@ class Flow extends G6.Net {
       }
     });
     this.on('click', (ev) => {
-      const { item: { _attrs: { id }} } = ev;
+      const { item } = ev;
+      if (!item) return;
+      const { _attrs: { id } } = item;
       if (this.domClick) {
         document.getElementById(`${id}_dom`).click()
       }
