@@ -15,7 +15,8 @@ interface Drag {
   clientY: number;
 }
 
-class Flow extends G6.Net {
+// class Flow extends G6.Net. Cannot assign to read only property 'constructor' of object '#<t>'.
+class Flow {
   private readonly moduleName: string = 'Flow';
   private nodeMange: GenNode;
   private dragOrigin: Drag;
@@ -25,6 +26,7 @@ class Flow extends G6.Net {
   private dragginCancas: boolean;
   private _cfg: any;
   private domClick: boolean = false;
+  private g6: any;
 
   static registerNode = G6.registNode;
   static registerEdge = G6.registEdge;
@@ -33,8 +35,10 @@ class Flow extends G6.Net {
   static registerBehaviour = G6.registBehaviour;
   static version = '0.1.0';
   constructor(cfg: any) {
-    super(cfg.graph);
+    // super(cfg.graph);
     const { graph, domClick } = cfg;
+    this.g6 = new G6.Net(graph)
+
     // super(Object.assign({}, graph, { plugins: [grid] }));
     //  g6降级v1版本，需删除container
     this._cfg = graph;
@@ -46,7 +50,7 @@ class Flow extends G6.Net {
   }
 
   add(type: string, node: any) {
-    super.add(type, node)
+    this.g6.add(type, node)
   }
 
   addEventListener() {
@@ -81,20 +85,24 @@ class Flow extends G6.Net {
   }
 
   beginAdd(type: string, node: any) {
-    super.beginAdd(type, node);
+    this.g6.beginAdd(type, node);
   }
 
   changeMode(type: string) {
-    super.changeMode(type)
+    this.g6.changeMode(type)
+  }
+
+  edge(attr: any) {
+    this.g6.edge(attr);
   }
 
   getViewPortBox() {
-    return super.getViewPortBox();
+    return this.g6.getViewPortBox();
   }
 
   mapGrapPosition(dom: any) {
     const { x, y } = dom;
-    const scale = this.getScale();
+    const scale = this.g6.getScale();
     const { minX, minY, maxX, maxY } = this.getViewPortBox();
     return { x: x / scale + minX, y: y / scale + minY }
   }
@@ -129,7 +137,7 @@ class Flow extends G6.Net {
   }
 
   on (type: string, func: any) {
-    super.on(type, func)
+    this.g6.on(type, func)
   }
 
   onDrag() {
@@ -158,7 +166,7 @@ class Flow extends G6.Net {
       ...position
     }
     this.add('node', nextNode);
-    this.refresh();
+    this.g6.refresh();
   }
 
   findDom() {
@@ -186,19 +194,19 @@ class Flow extends G6.Net {
   }
 
   showAnchor(obj: any) {
-    super.showAnchor(obj);
+    this.g6.showAnchor(obj);
   }
 
   source(nodes: Array<any>, edges: Array<any>) {
-    super.source(nodes, edges);
+    this.g6.source(nodes, edges);
   }
 
   removeBehaviour(arr: Array<string>) {
-    super.removeBehaviour(arr);
+    this.g6.removeBehaviour(arr);
   }
 
   public render() {
-    super.render();
+    this.g6.render();
   }
 
   public read(data: any) {
@@ -211,14 +219,14 @@ class Flow extends G6.Net {
     // 进入锚点切换到曲线添加模式
     // 第五️步：编辑交互变形
     var dragging = false;
-    this.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
-    this.on('dragstart', function(ev){
+    this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.g6.on('dragstart', function(ev){
       dragging = true;
     });
-    this.on('dragend', function(ev){
+    this.g6.on('dragend', function(ev){
       dragging = false;
     });
-    this.on('mouseenter', (ev) => {
+    this.g6.on('mouseenter', (ev) => {
       var shape = ev.shape;
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.beginAdd('edge', {
@@ -227,19 +235,19 @@ class Flow extends G6.Net {
       }
     });
     // 离开锚点切换回编辑模式
-    this.on('mouseleave', (ev) => {
+    this.g6.on('mouseleave', (ev) => {
       var shape = ev.shape;
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.changeMode('edit');
       }
     });
-    this.on('afteritemrender', (ev) => {
+    this.g6.on('afteritemrender', (ev) => {
       var item = ev.item;
       if(item.get('type') === 'node'){
         this.showAnchor(item);
       }
     });
-    this.on('click', (ev) => {
+    this.g6.on('click', (ev) => {
       const { item } = ev;
       if (!item) return;
       const { _attrs: { id } } = item;
@@ -254,16 +262,16 @@ class Flow extends G6.Net {
     setTimeout(() => {
       this.event.addListener('@delete_node', (ev: any) => {
         const id = ev;
-        this.remove(id);
-        this.refresh();
+        this.g6.remove(id);
+        this.g6.refresh();
       });
       this.event.addListener('@updo', (ev) => {
-        this.updo();
-        this.refresh();
+        this.g6.updo();
+        this.g6.refresh();
       })
       this.event.addListener('@redo', (ev) => {
-        this.redo();
-        this.refresh();
+        this.g6.redo();
+        this.g6.refresh();
       })
 
       this.event.addListener('@dragmode', (ev) => {
@@ -271,18 +279,18 @@ class Flow extends G6.Net {
       })
 
       this.event.addListener('@zoomIn', (ev) => {
-        const scale = this.getScale();
-        this._zoom(scale + 0.5)
-        this.refresh()
+        const scale = this.g6.getScale();
+        this.g6._zoom(scale + 0.5)
+        this.g6.refresh()
       })
       this.event.addListener('@zoomOut', (ev) => {
-        const scale = this.getScale();
-        this._zoom(scale - 0.5)
-        this.refresh()
+        const scale = this.g6.getScale();
+        this.g6._zoom(scale - 0.5)
+        this.g6.refresh()
       })
       this.event.addListener('@zoomReset', (ev) => {
-        this._zoom(1)
-        this.refresh()
+        this.g6._zoom(1)
+        this.g6.refresh()
       })
 
     }, 1000)
@@ -293,11 +301,11 @@ class Flow extends G6.Net {
   }
 
   update(type: string, func: any) {
-    super.update(type, func);
+    this.g6.update(type, func);
   }
 
   translate(x: number, y: number) {
-    super.translate(x, y);
+    this.g6.translate(x, y);
   }
 }
 
