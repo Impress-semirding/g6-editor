@@ -202,7 +202,12 @@ class Flow extends G6.Net {
   }
 
   public read(data: any) {
+    this.registerAnyHandle();
     this.source(data.nodes, data.edges);
+    this.render();
+  }
+
+  private registerAnyHandle() {
     // 进入锚点切换到曲线添加模式
     // 第五️步：编辑交互变形
     var dragging = false;
@@ -280,7 +285,6 @@ class Flow extends G6.Net {
 
     }, 1000)
 
-    this.render();
     setTimeout(() => {
       this.onDrag();
     }, 50);

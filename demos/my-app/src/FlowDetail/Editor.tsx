@@ -11,28 +11,30 @@ export default class Editor extends React.Component {
       selectedModel: {}, // 当前选中项数据模型
     };
   }
-
-  genDom(id: string, params: any) {
-    const { width, height, x, y } = params;
-    const dom = document.getElementById(`${id}_dom`);
-    if (dom) {
-      dom.style.left = `${x}px`;
-      dom.style.top = `${y}px`;
-    } else {
-      const node = document.getElementsByClassName('graph-container-html-Elements');
-      const div = document.createElement('div');
-      div.id = `${id}_dom`;
-      div.style.display = 'block';
-      div.style.position = 'absolute';
-      div.style.width = `${width}px`;
-      div.style.height = `${height}px`;
-      div.style.left = `${x}px`;
-      div.style.top = `${y}px`;
-      div.style.background = 'rgba(1, 1, 1, 0.3)';
-      div.addEventListener('click', (e) => { alert(1111); });
-      node[0].appendChild(div);
-    }
-  }
+  //  本期暂时无法提供外部dom。
+  // genDom(id: string, params: any) {
+  //   const { width, height, x, y, scale } = params;
+  //   const dom = document.getElementById(`${id}_dom`);
+  //   if (dom) {
+  //     const width = dom.style.width;
+  //     const height = dom.style.height;
+  //     dom.style.left = `${x}px`;
+  //     dom.style.top = `${y}px`;
+  //   } else {
+  //     const node = document.getElementsByClassName('graph-container-html-Elements');
+  //     const div = document.createElement('div');
+  //     div.id = `${id}_dom`;
+  //     div.style.display = 'block';
+  //     div.style.position = 'absolute';
+  //     div.style.width = `${width * scale}px`;
+  //     div.style.height = `${height * scale}px`;
+  //     div.style.left = `${x}px`;
+  //     div.style.top = `${y}px`;
+  //     div.style.background = 'rgba(1, 1, 1, 0.3)';
+  //     div.addEventListener('click', (e) => { alert(1111); });
+  //     node[0].appendChild(div);
+  //   }
+  // }
 
   componentDidMount() {
     this.editor = new G6Editor({ container: 'editor' });
@@ -49,7 +51,8 @@ export default class Editor extends React.Component {
         width: pages.clientWidth,
         rollback: true,
       },
-      domClick: true,
+      // domClick: true,
+      // translateDom: this.genDom,
       noEndEdge: false,
     });
 
@@ -62,7 +65,7 @@ export default class Editor extends React.Component {
         const { x, y } = { x: 0, y: 0 };
         const borderRadius = 4;
         const { id, x: fx, y: fy } = model;
-        self.genDom(id, { width, height, x: fx, y: fy });
+        // self.genDom(id, { width, height, ...self.page.mapDomPosition({ x: fx, y: fy }), scale: self.page.getScale() });
         const keyShape = group.addShape('rect', {
           attrs: {
             x,
@@ -140,27 +143,7 @@ export default class Editor extends React.Component {
       },
     });
 
-    page.read({ nodes: [{
-      shape: 'k-mmmm',
-      id: 'node1',
-      x: 0,
-      y: 100,
-    },
-    {
-      shape: 'k-means',
-      id: 'node2',
-      x: 300,
-      y: 300,
-    }],
-      edges: [
-        // {
-        //   id: 'edge1',
-        //   target: 'node2',
-        //   source: 'node1',
-        //   label: '我是线条',
-        // },
-      ],
-    });
+    page.read({ nodes: [], edges: [] });
 
     this.editor.add(page);
 
