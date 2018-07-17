@@ -10,24 +10,35 @@ import Editor from './Editor';
 import ToolBar from './Toolbar';
 // import Contextmenu from './Contextmenu.jsx';
 import Page from './Page';
+
 import './editor.css';
 import './modelFlowEditor.css';
 
+
 export default class ModelFlowEditor extends Editor {
+  constructor(props) {
+    super(props);
+  }
+
 
   componentDidMount() {
     super.componentDidMount();
   }
 
+  nodeClick(id) {
+    this.props.edit();
+  }
+
   public render() {
-    return (<div id="editor" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    return (
+    <div id="editor" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <ToolBar />
       <div style={{ flex: 16}}>
       <div className="bottom-container">
         {/* <Contextmenu /> */}
         <div id="itempannel">
           <ul>
-            <li className="getItem" style={{ height: '80px', lineHeight: '80px', border: '1px solid rgb(153, 153, 153, 0.4)' }} data-shape="k-means" id="k-means" data-key="k-means" data-type="node" data-size="170*34" data-extendid="model-card">
+            <li className="getItem" style={{ height: '48px', lineHeight: '48px', border: '1px solid rgb(153, 153, 153, 0.4)' }} data-shape="k-means" id="k-means" data-key="k-means" data-type="node" data-size="170*34" data-extendid="model-card">
               <span className="pannel-type-icon" />test节点
             </li>
           </ul>

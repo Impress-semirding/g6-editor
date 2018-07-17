@@ -2,15 +2,23 @@ import * as React from 'react';
 
 import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src/index';
 
-export default class Editor extends React.Component {
+interface EditorProps {
+  edit: any;
+}
+
+interface EditorState {
+}
+
+
+export default class Editor extends React.Component<EditorProps, EditorState> {
   private editor: any;
   private page: any;
   constructor(props: any) {
     super(props);
-    this.state = {
-      selectedModel: {}, // 当前选中项数据模型
-    };
   }
+
+  nodeClick(id) {}
+
   //  本期暂时无法提供外部dom。
   // genDom(id: string, params: any) {
   //   const { width, height, x, y, scale } = params;
@@ -50,6 +58,7 @@ export default class Editor extends React.Component {
         height: pages.clientHeight,
         width: pages.clientWidth,
         rollback: true,
+        forceAlign: true,
       },
       // domClick: true,
       // translateDom: this.genDom,
@@ -60,8 +69,8 @@ export default class Editor extends React.Component {
     Flow.registerNode('model-card', {
       draw(cfg, group) {
         const model = cfg.model;
-        const width = 184;
-        const height = 40;
+        const width = 168;
+        const height = 48;
         const { x, y } = { x: 0, y: 0 };
         const borderRadius = 4;
         const { id, x: fx, y: fy } = model;
@@ -91,32 +100,57 @@ export default class Editor extends React.Component {
           },
         });
         // 类型 logo
-        group.addShape('image', {
-          attrs: {
-            img: this.type_icon_url,
-            x: x + 16,
-            y: y + 12,
-            width: 20,
-            height: 16,
-          },
-        });
+        // group.addShape('image', {
+        //   attrs: {
+        //     img: this.type_icon_url,
+        //     x: x + 16,
+        //     y: y + 12,
+        //     width: 20,
+        //     height: 16,
+        //   },
+        // });
         // 名称文本
         const label = model.label ? model.label : this.label;
         group.addShape('text', {
           attrs: {
             text: label,
-            x: x + 52,
-            y: y + 13,
+            x: x + 16,
+            y: y + 3,
+            fontSize: '12',
             textAlign: 'start',
             textBaseline: 'top',
-            fill: 'rgba(0,0,0,0.65)',
+            fill: 'rgba(0,0,0,1)',
+          },
+        });
+        //   node name
+        group.addShape('text', {
+          attrs: {
+            text: '年龄',
+            x: x + 16,
+            y: y + 22,
+            fontSize: '13',
+            textAlign: 'start',
+            textBaseline: 'top',
+            fill: 'rgba(0,0,0,0.45)',
+          },
+        });
+        //  node task promt.
+        group.addShape('text', {
+          attrs: {
+            text: '任务',
+            x: x + 56,
+            y: y + 22,
+            fontSize: '12',
+            textAlign: 'start',
+            textBaseline: 'top',
+            fill: 'rgba(0,0,0,0.45)',
           },
         });
         // 状态 logo
         group.addShape('image', {
           attrs: {
             img: this.state_icon_url,
-            x: x + 158,
+            x: x + 129,
             y: y + 12,
             width: 16,
             height: 16,
@@ -127,13 +161,42 @@ export default class Editor extends React.Component {
       // 设置锚点
       getAnchorPoints: function(){
         return [
-          [0, 0.5],
-          [1, 0.5],
-          [1, 0.25],
-          [1, 0.5]
+          [0.5, 0],
+          [0.5, 1]
         ];
+      },
+      /**
+       * point is node path, clickAreea is click path.
+       */
+      clickPath: (point, ev) => {
+        const minx = 129, miny = 12, maxx = 145 , maxy = 28;
+        const { l, t } = point;
+        const { x, y } = ev;
+        if (x >= minx + l && x <= maxx + l && y >= miny + t && y <= maxy + t) {
+          this.nodeClick(ev.item._attrs.id);
+        }
+        return null;
       }
     });
+    Flow.registerNode('model-card-html', {
+      getHtml: function(cfg){
+        var model = cfg.model;
+        var dom = Flow.Util.createDOM('<ul class="customNode1" id="customNode1"><li>html节点</li><li>'+model.id+'</li><li>x:'+model.x+'</li><li>y:'+model.y+'</li></ul>');
+        setTimeout(() => {
+          document.addEventListener('click', (ev) => {
+            debugger;
+            console.log(ev)
+          }, true)
+        }, 1000)
+        return dom;
+      },
+      getAnchorPoints: function(){
+        return [
+          [0.5, 0],
+          [0.5, 1]
+        ];
+      }
+    }, 'html')
 
     page.edge({
       style() {

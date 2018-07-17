@@ -33,6 +33,7 @@ class Flow {
   static registerGroup = G6.registGroup;
   static registerGuide = G6.registGuide;
   static registerBehaviour = G6.registBehaviour;
+  static Util = G6.Util;
   static version = '0.1.0';
   constructor(cfg: any) {
     // super(cfg.graph);
@@ -193,9 +194,15 @@ class Flow {
     return document.getElementsByClassName(container);
   }
 
+  hideAnchor(obj: any) {
+    this.g6.hideAnchor(obj);
+  }
+
   showAnchor(obj: any) {
     this.g6.showAnchor(obj);
   }
+
+
 
   source(nodes: Array<any>, edges: Array<any>) {
     this.g6.source(nodes, edges);
@@ -219,7 +226,10 @@ class Flow {
     // 进入锚点切换到曲线添加模式
     // 第五️步：编辑交互变形
     var dragging = false;
-    this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.g6.addBehaviour(['hoverNodeShowAnchor', 'dragEdge', 'dragEdgeEndHideAnchor', 'hoverAnchorSetActived'])
+    // this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.g6.removeBehaviour(['resizeNode']);
+
     this.g6.on('dragstart', function(ev){
       dragging = true;
     });
@@ -227,7 +237,10 @@ class Flow {
       dragging = false;
     });
     this.g6.on('mouseenter', (ev) => {
-      var shape = ev.shape;
+      var { item, shape } = ev;
+      // if(item.get('type') === 'node'){
+      //   this.showAnchor(item);
+      // }
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.beginAdd('edge', {
           shape: 'polyLineFlow'
@@ -236,23 +249,24 @@ class Flow {
     });
     // 离开锚点切换回编辑模式
     this.g6.on('mouseleave', (ev) => {
-      var shape = ev.shape;
+      const { item, shape } = ev;
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.changeMode('edit');
       }
     });
-    this.g6.on('afteritemrender', (ev) => {
-      var item = ev.item;
-      if(item.get('type') === 'node'){
-        this.showAnchor(item);
-      }
-    });
+    // this.g6.on('afteritemrender', (ev) => {
+    //   var item = ev.item;
+    //   if(item.get('type') === 'node'){
+    //     this.showAnchor(item);
+    //   }
+    // });
     this.g6.on('click', (ev) => {
       const { item } = ev;
       if (!item) return;
       const { _attrs: { id } } = item;
-      if (this.domClick) {
-        document.getElementById(`${id}_dom`).click()
+      if (item._attrs.shapeObj.clickPath) {
+        const { minX: l, minY: t } = item._attrs.boxStash;
+        item._attrs.shapeObj.clickPath({ l, t }, ev);
       }
       if (ev.itemType === 'node') {
         this.event.emitEvent('ToolBar@@listen_node', [ev.item._attrs]);
@@ -285,6 +299,7 @@ class Flow {
       })
       this.event.addListener('@zoomOut', (ev) => {
         const scale = this.g6.getScale();
+        if (scale <= 0.5) return;
         this.g6._zoom(scale - 0.5)
         this.g6.refresh()
       })
