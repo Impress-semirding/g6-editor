@@ -15,6 +15,14 @@ interface Drag {
   clientY: number;
 }
 
+function god(name: string) {
+  return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+    // target: 对于静态成员来说是类的构造函数，对于实例成员是类的原型对象
+    // propertyKey: 成员的名字
+    // descriptor: 成员的属性描述符 {value: any, writable: boolean, enumerable: boolean, configurable: boolean}
+  }
+}
+
 // class Flow extends G6.Net. Cannot assign to read only property 'constructor' of object '#<t>'.
 class Flow {
   private readonly moduleName: string = 'Flow';
@@ -39,6 +47,15 @@ class Flow {
     // super(cfg.graph);
     const { graph, domClick } = cfg;
     this.g6 = new G6.Net(graph)
+    this.g6.tooltip({
+      title: '标题', // @type {String} 标题
+      split: '=>',  // @type {String} 分割符号
+      dx: 10,       // @type {Number} 水平偏移
+      dy: 10        // @type {Number} 竖直偏移
+    });
+    this.g6.edge().tooltip(['id', 'label']);
+    this.g6.node().tooltip(['id']);
+
 
     // super(Object.assign({}, graph, { plugins: [grid] }));
     //  g6降级v1版本，需删除container
@@ -49,6 +66,8 @@ class Flow {
     this.dragginNode = false;
     this.dragginCancas = false;
   }
+  @god('tasaid.com')
+  sayHello () { }
 
   add(type: string, node: any) {
     this.g6.add(type, node)
@@ -83,6 +102,17 @@ class Flow {
       extendId
     );
     this.beginAdd('node', node);
+  }
+
+  bulkCreate(type: string, payload: any) {
+    const nodes = this.g6.getNodes()
+    const source = nodes[0]._attrs.id
+    const id = new Date().getTime();
+    const target = nodes[1]._attrs.id;
+    const style = {
+      arrow: true,
+    }
+    this.g6.add('edge', { source, id, target, style, shape: 'smooth', label: '我是刚刚新添加的edge' })
   }
 
   beginAdd(type: string, node: any) {
@@ -243,7 +273,12 @@ class Flow {
       // }
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.beginAdd('edge', {
-          shape: 'polyLineFlow'
+          shape: 'smooth',
+          label: 'n颠三倒四i',
+          style: {
+            arrow: true,
+            label: 'n颠三倒四i'
+          }
         });
       }
     });
@@ -313,6 +348,29 @@ class Flow {
     setTimeout(() => {
       this.onDrag();
     }, 50);
+
+
+    this.g6.on('beforeaddedge', ev => {
+      debugger;
+      if (ev.anchor.type === 'input') {
+        ev.cancel = true;
+      }
+    });
+    this.g6.on('dragedge:beforeshowanchor', ev => {
+      debugger;
+      // 只允许目标锚点是输入，源锚点是输出，才能连接
+      if (!(ev.targetAnchor.type === 'input' && ev.sourceAnchor.type === 'output')) {
+        ev.cancel = true;
+      }
+      // 如果拖动的是目标方向，则取消显示目标节点中已被连过的锚点
+      if (ev.dragEndPointType === 'target' && this.g6.anchorHasBeenLinked(ev.target, ev.targetAnchor)) {
+        ev.cancel = true;
+      }
+      // 如果拖动的是源方向，则取消显示源节点中已被连过的锚点
+      if (ev.dragEndPointType === 'source' && this.g6.anchorHasBeenLinked(ev.source, ev.sourceAnchor)) {
+        ev.cancel = true;
+      }
+    });
   }
 
   update(type: string, func: any) {

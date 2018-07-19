@@ -1,7 +1,5 @@
 import * as React from 'react';
 import ModelFlowEditor from './FlowDetail';
-import NodeModal from './FlowDetail/Modal';
-
 
 // import './App.css';
 
@@ -45,12 +43,9 @@ class App extends React.Component<AppProps, AppState> {
       <div className="App">
         <ModelFlowEditor
           edit={this.edit}
-        />
-
-        <NodeModal
-          visible={this.state.modalVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          modalVisible={this.state.modalVisible}
+          handleOk={this.handleOk}
+          handleCancel={this.handleCancel}
         />
       </div>
     );

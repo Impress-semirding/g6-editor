@@ -5,6 +5,8 @@
 
 import * as React from 'react';
 import Editor from './Editor';
+import NodeModal from './Modal';
+
 // import G6Editor from '../g6Editor';
 // import Navigator from './Navigator.jsx';
 import ToolBar from './Toolbar';
@@ -23,6 +25,11 @@ export default class ModelFlowEditor extends Editor {
 
   componentDidMount() {
     super.componentDidMount();
+  }
+
+  bulkCreate = () => {
+    const page = super.getPage();
+    page.bulkCreate();
   }
 
   nodeClick(id) {
@@ -52,6 +59,12 @@ export default class ModelFlowEditor extends Editor {
         />*/}
       </div>
       </div>
+      <NodeModal
+        visible={this.props.modalVisible}
+        onOk={this.props.handleOk}
+        onCancel={this.props.handleCancel}
+        bulkCreate={this.bulkCreate}
+      />
     </div>);
   }
 }

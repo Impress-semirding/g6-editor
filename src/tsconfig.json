@@ -5,6 +5,7 @@
       "noImplicitAny": false,
       "module": "commonjs",
       "target": "es5",
+      "experimentalDecorators": true
   },
   "include": [
     "./*.ts"

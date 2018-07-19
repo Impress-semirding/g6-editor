@@ -1,9 +1,13 @@
 import * as React from 'react';
+const G6 = require("G6")
 
 import G6Editor, { Flow, Itempannel, ToolBar } from '../../../../src/index';
 
 interface EditorProps {
   edit: any;
+  modalVisible: boolean;
+  handleOk: any;
+  handleCancel: any;
 }
 
 interface EditorState {
@@ -15,6 +19,10 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
   private page: any;
   constructor(props: any) {
     super(props);
+  }
+
+  getPage() {
+    return this.page;
   }
 
   nodeClick(id) {}
@@ -66,6 +74,12 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     });
 
     const self = this;
+
+    G6.Global.anchorPointHoverStyle = {
+      lineWidth: 15,
+      stroke: '#108EE9',
+      strokeOpacity: 0.2
+    };
     Flow.registerNode('model-card', {
       draw(cfg, group) {
         const model = cfg.model;
@@ -161,8 +175,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       // 设置锚点
       getAnchorPoints: function(){
         return [
-          [0.5, 0],
-          [0.5, 1]
+          [0.5, 0, { type: 'input'}],
+          [0.5, 1, { type: 'output'}]
         ];
       },
       /**
@@ -184,7 +198,6 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
         var dom = Flow.Util.createDOM('<ul class="customNode1" id="customNode1"><li>html节点</li><li>'+model.id+'</li><li>x:'+model.x+'</li><li>y:'+model.y+'</li></ul>');
         setTimeout(() => {
           document.addEventListener('click', (ev) => {
-            debugger;
             console.log(ev)
           }, true)
         }, 1000)
@@ -192,8 +205,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
       },
       getAnchorPoints: function(){
         return [
-          [0.5, 0],
-          [0.5, 1]
+          [0.5, 0, { type: 'input'}],
+          [0.5, 1, { type: 'output'}]
         ];
       }
     }, 'html')
