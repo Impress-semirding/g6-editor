@@ -38,6 +38,7 @@ class Flow {
   constructor(cfg: any) {
     // super(cfg.graph);
     const { graph, domClick } = cfg;
+    
     this.g6 = new G6.Net(graph)
     this.g6.tooltip({
       title: '标题', // @type {String} 标题
@@ -47,10 +48,6 @@ class Flow {
     });
     this.g6.edge().tooltip(['id', 'label']);
     this.g6.node().tooltip(['id']);
-
-
-    // super(Object.assign({}, graph, { plugins: [grid] }));
-    //  g6降级v1版本，需删除container
     this._cfg = graph;
     this.domClick = domClick || false;
     this.nodeMange = new GenNode({});
@@ -71,28 +68,12 @@ class Flow {
       const { clientX, clientY } = ev;
       this.dragOrigin = { clientX, clientY };
     });
-    this.event.addListener(`Itempannel@@command`, this.addWithCommand.bind(this));
-
+    // this.event.addListener(`Itempannel@@command`, this.addWithCommand.bind(this));
+    this.registerAnyHandle();
   }
 
   addEventTo(event: any) {
     this.event = event;
-  }
-
-  addWithCommand(ev) {
-    const shape = ev.shape;
-    const extendId = ev.extendid;
-    debugger;
-    const node = this.nodeMange.extendModelCard(shape,
-      {
-        dragOrigin: { clientX: 50, clientY: 50 },
-        dragTarget: { clientX: 100, clientY: 100 },
-        width: 184,
-        height: 40
-      },
-      extendId
-    );
-    this.beginAdd('node', node);
   }
 
   bulkCreate(type: string, payload: any) {
@@ -103,7 +84,7 @@ class Flow {
     const style = {
       arrow: true,
     }
-    this.g6.add('edge', { source, id, target, style, shape: 'smooth', label: '我是刚刚新添加的edge' })
+    this.g6.add('edge', { source, id, target, style, shape: 'smooth', label: '' })
   }
 
   beginAdd(type: string, node: any) {
@@ -175,12 +156,8 @@ class Flow {
     const node = this.nodeMange.extendModelCard(shape,
       {
         dragOrigin: this.dragOrigin,
-        dragTarget: { clientX, clientY
-      },
-      width: 184,
-      height: 40
-    },
-    extendId);
+        dragTarget: { clientX, clientY },
+      }, extendId);
     const { x, y } = node;
     const position = this.mapGrapPosition({ x, y})
     const nextNode = {
@@ -223,8 +200,6 @@ class Flow {
     this.g6.showAnchor(obj);
   }
 
-
-
   source(nodes: Array<any>, edges: Array<any>) {
     this.g6.source(nodes, edges);
   }
@@ -238,7 +213,6 @@ class Flow {
   }
 
   public read(data: any) {
-    this.registerAnyHandle();
     this.source(data.nodes, data.edges);
     this.render();
   }
@@ -265,10 +239,8 @@ class Flow {
       if(shape && shape.hasClass('anchor-point') && !dragging) {
         this.beginAdd('edge', {
           shape: 'smooth',
-          label: 'n颠三倒四i',
           style: {
             arrow: true,
-            label: 'n颠三倒四i'
           }
         });
       }
@@ -340,28 +312,27 @@ class Flow {
       this.onDrag();
     }, 50);
 
-
-    this.g6.on('beforeaddedge', ev => {
-      debugger;
-      if (ev.anchor.type === 'input') {
-        ev.cancel = true;
-      }
-    });
-    this.g6.on('dragedge:beforeshowanchor', ev => {
-      debugger;
-      // 只允许目标锚点是输入，源锚点是输出，才能连接
-      if (!(ev.targetAnchor.type === 'input' && ev.sourceAnchor.type === 'output')) {
-        ev.cancel = true;
-      }
-      // 如果拖动的是目标方向，则取消显示目标节点中已被连过的锚点
-      if (ev.dragEndPointType === 'target' && this.g6.anchorHasBeenLinked(ev.target, ev.targetAnchor)) {
-        ev.cancel = true;
-      }
-      // 如果拖动的是源方向，则取消显示源节点中已被连过的锚点
-      if (ev.dragEndPointType === 'source' && this.g6.anchorHasBeenLinked(ev.source, ev.sourceAnchor)) {
-        ev.cancel = true;
-      }
-    });
+    // this.g6.on('beforeaddedge', ev => {
+    //   debugger;
+    //   if (ev.anchor.type === 'input') {
+    //     ev.cancel = true;
+    //   }
+    // });
+    // this.g6.on('dragedge:beforeshowanchor', ev => {
+    //   debugger;
+    //   // 只允许目标锚点是输入，源锚点是输出，才能连接
+    //   if (!(ev.targetAnchor.type === 'input' && ev.sourceAnchor.type === 'output')) {
+    //     ev.cancel = true;
+    //   }
+    //   // 如果拖动的是目标方向，则取消显示目标节点中已被连过的锚点
+    //   if (ev.dragEndPointType === 'target' && this.g6.anchorHasBeenLinked(ev.target, ev.targetAnchor)) {
+    //     ev.cancel = true;
+    //   }
+    //   // 如果拖动的是源方向，则取消显示源节点中已被连过的锚点
+    //   if (ev.dragEndPointType === 'source' && this.g6.anchorHasBeenLinked(ev.source, ev.sourceAnchor)) {
+    //     ev.cancel = true;
+    //   }
+    // });
   }
 
   update(type: string, func: any) {

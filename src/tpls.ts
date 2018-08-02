@@ -12,6 +12,8 @@ interface ModelCard {
   color_type: string;
   type_icon_url: string;
   state_icon_url:string;
+  width: number;
+  height: number;
 }
 
 const card: ModelCard = {
@@ -20,7 +22,9 @@ const card: ModelCard = {
   color_type: '#1890FF',
   type_icon_url: 'https://gw.alipayobjects.com/zos/rmsportal/czNEJAmyDpclFaSucYWB.svg',
   // state_icon_url: 'https://gw.alipayobjects.com/zos/rmsportal/MXXetJAxlqrbisIuZxDO.svg',
-  state_icon_url: 'https://imadmin2-dev.zhongan.io/image/file/a640c6cd-5350-4178-8db3-fb2febd34c92'
+  state_icon_url: 'https://imadmin2-dev.zhongan.io/image/file/a640c6cd-5350-4178-8db3-fb2febd34c92',
+  width: 168,
+  height: 48
 }
 
 const tpls: Array<ModelCard> = [card]

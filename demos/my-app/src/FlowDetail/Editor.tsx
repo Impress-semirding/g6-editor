@@ -83,8 +83,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
     Flow.registerNode('model-card', {
       draw(cfg, group) {
         const model = cfg.model;
-        const width = 168;
-        const height = 48;
+        // const width = 168;
+        // const height = 48;
         const { x, y } = { x: 0, y: 0 };
         const borderRadius = 4;
         const { id, x: fx, y: fy } = model;
@@ -93,8 +93,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
           attrs: {
             x,
             y,
-            width,
-            height,
+            width: this.width,
+            height: this.height,
             radius: borderRadius,
             fill: 'white',
             stroke: '#CED4D9',
@@ -105,8 +105,8 @@ export default class Editor extends React.Component<EditorProps, EditorState> {
           attrs: {
             path: [
               ['M', x, y + borderRadius],
-              ['L', x, y + height - borderRadius],
-              ['A', borderRadius, borderRadius, 0, 0, 0, x + borderRadius, y + height],
+              ['L', x, y + this.height - borderRadius],
+              ['A', borderRadius, borderRadius, 0, 0, 0, x + borderRadius, y + this.height],
               ['L', x + borderRadius, y],
               ['A', borderRadius, borderRadius, 0, 0, 0, x, y + borderRadius],
             ],

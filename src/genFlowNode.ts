@@ -27,7 +27,7 @@ class GenNode {
     }
   }
 
-  createData(id: number, attrs: any, shape: string) {
+  createData(id: string, attrs: any, shape: string) {
     const {
       dragOrigin:  { clientX: oX, clientY: oY },
       dragTarget: { clientX, clientY },
@@ -36,15 +36,15 @@ class GenNode {
     } = attrs;
     const x = clientX - oX - width;
     const y = clientY - oY + height / 2;
-    return { id: id.toString(), shape, x, y};
+    return { id, shape, x, y};
   }
 
   //  暂时只支持node节点模版
-  extendModelCard(shape: string,atrrs: any, extendId: string) {
+  extendModelCard(shape: string,attrs: any, extendId: string) {
     const tplAttrs = getTpl(shape);
-    const id = new Date().getTime();
+    const id = new Date().getTime().toString();
     Flow.registerNode(shape, tplAttrs, extendId);
-    return this.createData(id, atrrs, shape);
+    return this.createData(id, (<any>Object).assign({}, attrs, tplAttrs), shape);
   }
 }
 
