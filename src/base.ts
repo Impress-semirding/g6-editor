@@ -27,7 +27,7 @@ export default class Base extends EventEmitter {
     this._cfg[name] = value;
   }
 
-  addListener(type: string, func: any) : void {
+  addListener(type: string, func: () => void) : void {
     super.addListener(type, func);
   };
 

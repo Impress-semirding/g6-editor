@@ -6,10 +6,16 @@
  * @desc [description]
 */
 import Base from './base';
+import Flow from './flow';
+import Itempannel from './itempannel';
+import ToolBar from './toolbar';
+
+type Module = Flow | Itempannel | ToolBar;
 
 interface Modules {
-  [propName: string]: any;
+  [propName: string]: Module;
 }
+
 
 class Editor extends Base {
   private modules: Modules;
@@ -21,7 +27,6 @@ class Editor extends Base {
   initContainer() {
     let container = this.get('container');
     if (!container) {
-      // Compatible with id written
       container = this.get('id');
     }
     if (container) {
@@ -33,14 +38,15 @@ class Editor extends Base {
     }
   }
 
-  addListener(type: string, func: any) : void {
+  addListener(type: string, func: () => void) : void {
     super.addListener(type, func);
   };
+
   emitEvent(type: string, data: any) : void {
     super.emitEvent(type, data);
   };
 
-  add(component: any) {
+  add(component: Module) {
     if (typeof component !== 'object') {
       return;
     }
@@ -51,7 +57,7 @@ class Editor extends Base {
     }
   }
 
-  addParseEvent(component: any) {
+  addParseEvent(component: Module) {
     this.addListener(`${component.moduleName}@@parse`, component.parse.bind(component));
   }
 
@@ -59,9 +65,6 @@ class Editor extends Base {
     this.emitEvent(type, []);
   }
 
-  // registerTemplateNodes(cfg: any) {
-
-  // }
 }
 
 export default Editor;

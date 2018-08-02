@@ -17,7 +17,7 @@ interface Options {
 class Itempannel extends BaseDom {
   private event: any;
   private options: Options;
-  private readonly moduleName: string = 'Itempannel';
+  public readonly moduleName: string = 'Itempannel';
   private datasets: Array<number>;
   private containers: any;
   private nodes: any;
