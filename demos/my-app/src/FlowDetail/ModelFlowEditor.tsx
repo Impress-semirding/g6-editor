@@ -29,7 +29,12 @@ export default class ModelFlowEditor extends Editor {
 
   bulkCreate = () => {
     const page = super.getPage();
-    page.bulkCreate();
+    const nodes = page.g6.getNodes();
+    const source = nodes[0]._attrs.id
+    const id = new Date().getTime();
+    const target = nodes[1]._attrs.id;
+    const style = { arrow: true };
+    page.buldCreateEdge({ source, id, target, style, shape: 'smooth', label: '' });
   }
 
   nodeClick(id) {

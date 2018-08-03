@@ -8,6 +8,7 @@
 
 const G6 = require("G6")
 
+import BaseDom from './dom';
 import GenNode from './genFlowNode';
 
 interface Drag {
@@ -16,7 +17,7 @@ interface Drag {
 }
 
 // class Flow extends G6.Net. Cannot assign to read only property 'constructor' of object '#<t>'.
-class Flow {
+class Flow extends BaseDom {
   public readonly moduleName: string = 'Flow';
   private nodeMange: GenNode;
   private dragOrigin: Drag;
@@ -25,7 +26,6 @@ class Flow {
   private dragginNode: boolean;
   private dragginCancas: boolean;
   private _cfg: any;
-  private domClick: boolean = false;
   private g6: any;
 
   static registerNode = G6.registNode;
@@ -36,20 +36,19 @@ class Flow {
   static Util = G6.Util;
   static version = '0.1.0';
   constructor(cfg: any) {
-    // super(cfg.graph);
-    const { graph, domClick } = cfg;
+    super();
+    const { graph } = cfg;
     
     this.g6 = new G6.Net(graph)
-    this.g6.tooltip({
-      title: '标题', // @type {String} 标题
-      split: '=>',  // @type {String} 分割符号
-      dx: 10,       // @type {Number} 水平偏移
-      dy: 10        // @type {Number} 竖直偏移
-    });
-    this.g6.edge().tooltip(['id', 'label']);
-    this.g6.node().tooltip(['id']);
+    // this.g6.tooltip({
+    //   title: '标题', // @type {String} 标题
+    //   split: '=>',  // @type {String} 分割符号
+    //   dx: 10,       // @type {Number} 水平偏移
+    //   dy: 10        // @type {Number} 竖直偏移
+    // });
+    // this.g6.edge().tooltip(['id', 'label']);
+    // this.g6.node().tooltip(['id']);
     this._cfg = graph;
-    this.domClick = domClick || false;
     this.nodeMange = new GenNode({});
     this.dragOrigin = null;
     this.dragginNode = false;
@@ -74,6 +73,10 @@ class Flow {
 
   addEventTo(event: any) {
     this.event = event;
+  }
+
+  buldCreateEdge(payload: any) {
+    this.g6.add('edge', payload)
   }
 
   bulkCreate(type: string, payload: any) {
@@ -178,20 +181,6 @@ class Flow {
     this.findDom();
   }
 
-  findDomById(container: string, node: any) { //eslint-disable-line
-    if (node) {
-      return node.getElementById(container);
-    }
-    return document.getElementById(container);
-  }
-
-  findDomByClassName(container: string, node: any) {//eslint-disable-line
-    if (node) {
-      return node.getElementsByClassName(container);
-    }
-    return document.getElementsByClassName(container);
-  }
-
   hideAnchor(obj: any) {
     this.g6.hideAnchor(obj);
   }
@@ -208,11 +197,11 @@ class Flow {
     this.g6.removeBehaviour(arr);
   }
 
-  public render() {
+  render() {
     this.g6.render();
   }
 
-  public read(data: any) {
+  read(data: any) {
     this.source(data.nodes, data.edges);
     this.render();
   }

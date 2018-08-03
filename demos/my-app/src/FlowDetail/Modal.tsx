@@ -23,7 +23,7 @@ export default class NodeModal extends React.Component<NodeProps> {
         title="Basic Modal"
         {...this.props}
       >
-        <div onClick={this.link}>Some contents...</div>
+        <div onClick={this.link}>click me,自动连接第一个节点和第二个节点哦</div>
       </Modal>
     );
   }
