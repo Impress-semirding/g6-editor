@@ -8,6 +8,7 @@
 
 const G6 = require("G6")
 
+import execute from './dagre'
 import BaseDom from './dom';
 import GenNode from './genFlowNode';
 
@@ -18,6 +19,14 @@ interface Drag {
 
 // class Flow extends G6.Net. Cannot assign to read only property 'constructor' of object '#<t>'.
 class Flow extends BaseDom {
+
+  static registerNode = G6.registNode;
+  static registerEdge = G6.registEdge;
+  static registerGroup = G6.registGroup;
+  static registerGuide = G6.registGuide;
+  static registerBehaviour = G6.registBehaviour;
+  static Util = G6.Util;
+  static version = '0.1.0';
   public readonly moduleName: string = 'Flow';
   private nodeMange: GenNode;
   private dragOrigin: Drag;
@@ -27,19 +36,17 @@ class Flow extends BaseDom {
   private dragginCancas: boolean;
   private _cfg: any;
   private g6: any;
-
-  static registerNode = G6.registNode;
-  static registerEdge = G6.registEdge;
-  static registerGroup = G6.registGroup;
-  static registerGuide = G6.registGuide;
-  static registerBehaviour = G6.registBehaviour;
-  static Util = G6.Util;
-  static version = '0.1.0';
+  private sync: (params: object) => void;
+  // private templates: any;
+  private windowOffset: any;
   constructor(cfg: any) {
     super();
-    const { graph } = cfg;
+    const { graph, sync, windowOffset } = cfg;
     
-    this.g6 = new G6.Net(graph)
+    this.g6 = new G6.Net(graph);
+    this.sync = sync;
+    // this.templates = templates;
+    this.windowOffset = windowOffset;
     // this.g6.tooltip({
     //   title: '标题', // @type {String} 标题
     //   split: '=>',  // @type {String} 分割符号
@@ -55,8 +62,172 @@ class Flow extends BaseDom {
     this.dragginCancas = false;
   }
 
-  add(type: string, node: any) {
-    this.g6.add(type, node)
+  private registerAnyHandle() {
+    // 进入锚点切换到曲线添加模式
+    // 第五️步：编辑交互变形
+    let dragging = false;
+    this.g6.addBehaviour(['hoverNodeShowAnchor', 'dragEdge', 'dragEdgeEndHideAnchor', 'hoverAnchorSetActived'])
+    // this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
+    this.g6.removeBehaviour(['resizeNode']);
+
+    this.g6.on('dragstart', function(ev){
+      dragging = true;
+    });
+    this.g6.on('dragend', function(ev){
+      dragging = false;
+    });
+    this.g6.on('mouseenter', (ev) => {
+      const { item, shape } = ev;
+      // if(item.get('type') === 'node'){
+      //   this.showAnchor(item);
+      // }
+      if(shape && shape.hasClass('anchor-point') && !dragging) {
+        this.beginAdd('edge', {
+          id: `edgeId@${new Date().getTime()}`,
+          shape: 'smooth',
+          style: {
+            color: '#C6D1DC',
+            stroke: '#C6D1DC',
+            arrow: true,
+          }
+        });
+      }
+    });
+    // 离开锚点切换回编辑模式
+    this.g6.on('mouseleave', (ev) => {
+      const { item, shape } = ev;
+      if(shape && shape.hasClass('anchor-point') && !dragging) {
+        this.changeMode('edit');
+      }
+    });
+    // this.g6.on('afteritemrender', (ev) => {
+    //   var item = ev.item;
+    //   if(item.get('type') === 'node'){
+    //     this.showAnchor(item);
+    //   }
+    // });
+
+    this.g6.on('click', (ev) => {
+      const { item } = ev;
+      if (!item) { return; }
+      const { _attrs: { id } } = item;
+      if (item._attrs.shapeObj.clickPath) {
+        const { minX: l, minY: t } = item._attrs.boxStash;
+        item._attrs.shapeObj.clickPath({ l, t }, ev);
+      }
+      if (ev.itemType === 'node') {
+        this.event.emitEvent('ToolBar@@listen_node', [ev.item._attrs]);
+      } else if (ev.itemType === 'edge') {
+        this.event.emitEvent('ToolBar@@listen_edge', [ev.item._attrs]);
+      }
+    })
+
+    this.on('dblclick', (ev) => {
+      const { item } = ev;
+      if (!item) { return; }
+      const { _attrs: { id }, shapeObj } = item;
+      if (item._attrs.shapeObj.dblclick && typeof item._attrs.shapeObj.dblclick === 'function') {
+        item._attrs.shapeObj.dblclick(ev)
+      }
+    })
+
+    setTimeout(() => {
+      this.event.addListener('@delete_node', (ev: any) => {
+        const id = ev;
+        // const ids = this.g6.getEdges(id);
+        // const id2 = this.g6.geEdges();
+        const g6 = this.g6;
+        if (id.indexOf('node') !== -1) {
+          const edges = this.g6.find(id).getEdges();
+          const ids = edges.map(t => t._attrs.model.id);
+          if (ids.length) {
+            this.sync({ type: 'edge', operate: 'delete', payload: { ids } });
+            ids.forEach(element => {
+              this.g6.remove(element);
+            });
+          }
+          this.sync({ type: 'node', operate: 'delete', payload: { id } });
+          this.g6.remove(id);
+        } else {
+          this.g6.remove(id);
+          this.sync({ type: 'edge', operate: 'delete', payload: { ids: [id] } });
+        }
+        this.g6.refresh();
+      });
+
+      this.event.addListener('@dagre_graph', (ev) => {
+        const nodes = this.g6.getNodes().map(t => ({ ...t._attrs.model }));
+        const edges = this.g6.getEdges().map(t => ({ ...t._attrs.model }));
+        const { nodes: next} = execute({ nodes, edges });
+        next.forEach(t => {
+          this.g6.update(t.id, t);
+        })
+        this.g6.refresh();
+        // const edges = this.g6.getEdges().map(t => ({ ...t._attrs.model }));
+      })
+
+      this.event.addListener('@updo', (ev) => {
+        this.g6.updo();
+        this.g6.refresh();
+      })
+      this.event.addListener('@redo', (ev) => {
+        this.g6.redo();
+        this.g6.refresh();
+      })
+
+      this.event.addListener('@dragmode', (ev) => {
+        this.changeMode('drag');
+      })
+
+      this.event.addListener('@zoomIn', (ev) => {
+        const scale = this.g6.getScale();
+        this.g6._zoom(scale + 0.5)
+        this.g6.refresh()
+      })
+      this.event.addListener('@zoomOut', (ev) => {
+        const scale = this.g6.getScale();
+        if (scale <= 0.5) { return; }
+        this.g6._zoom(scale - 0.5)
+        this.g6.refresh()
+      })
+      this.event.addListener('@zoomReset', (ev) => {
+        this.g6._zoom(1)
+        this.g6.refresh()
+      })
+
+      this.g6.refresh();
+
+    }, 1000)
+
+    setTimeout(() => {
+      this.onDrag();
+    }, 50);
+
+    // this.g6.on('beforeaddedge', ev => {
+    //   debugger;
+    //   if (ev.anchor.type === 'input') {
+    //     ev.cancel = true;
+    //   }
+    // });
+    // this.g6.on('dragedge:beforeshowanchor', ev => {
+    //   debugger;
+    //   // 只允许目标锚点是输入，源锚点是输出，才能连接
+    //   if (!(ev.targetAnchor.type === 'input' && ev.sourceAnchor.type === 'output')) {
+    //     ev.cancel = true;
+    //   }
+    //   // 如果拖动的是目标方向，则取消显示目标节点中已被连过的锚点
+    //   if (ev.dragEndPointType === 'target' && this.g6.anchorHasBeenLinked(ev.target, ev.targetAnchor)) {
+    //     ev.cancel = true;
+    //   }
+    //   // 如果拖动的是源方向，则取消显示源节点中已被连过的锚点
+    //   if (ev.dragEndPointType === 'source' && this.g6.anchorHasBeenLinked(ev.source, ev.sourceAnchor)) {
+    //     ev.cancel = true;
+    //   }
+    // });
+  }
+
+  add(type: string, data: any) {
+    this.g6.add(type, data)
   }
 
   addEventListener() {
@@ -118,7 +289,7 @@ class Flow extends BaseDom {
     let dx: number;
     let dy: number;
     this.on('node:dragstart', (ev: any) => {
-      if (this.dragginCancas) return;
+      if (this.dragginCancas) { return; }
       this.dragginNode = true;
       const { item } = ev;
       const model = item.getModel();
@@ -127,7 +298,7 @@ class Flow extends BaseDom {
       dy = model.y - ev.y;
     });
     this.on('node:drag', (ev: any) => {
-      if (this.dragginCancas) return;
+      if (this.dragginCancas) { return; }
       this.update(node, {
         x: ev.x + dx,
         y: ev.y + dy,
@@ -137,7 +308,7 @@ class Flow extends BaseDom {
       setTimeout(() => {
         this.dragginNode = false;
       }, 500)
-      if (this.dragginCancas) return;
+      if (this.dragginCancas) { return; }
       node = undefined;
     });
   }
@@ -150,25 +321,78 @@ class Flow extends BaseDom {
     this.dragNode();
   }
 
+  getModule(name) {
+    return this.event.modules[name]
+  }
+
   onDrop(ev: any) {
     ev.preventDefault();
     const clientX = ev.clientX;
     const clientY = ev.clientY;
     const shape = ev.dataTransfer.getData('shape');
     const extendId = ev.dataTransfer.getData('extendId');
-    const node = this.nodeMange.extendModelCard(shape,
-      {
-        dragOrigin: this.dragOrigin,
-        dragTarget: { clientX, clientY },
-      }, extendId);
-    const { x, y } = node;
-    const position = this.mapGrapPosition({ x, y})
-    const nextNode = {
-      ...node,
-      ...position
+    const name = ev.dataTransfer.getData('name');
+    const theme = ev.dataTransfer.getData('theme');
+    const offsetTop = ev.dataTransfer.getData('offsetTop');
+    const stringify = ev.dataTransfer.getData('stringify');
+    let nextNode: any;
+    if (name === 'undefined') {
+      const node = this.nodeMange.extendModelCard(shape,
+        {
+          dragOrigin: this.dragOrigin,
+          dragTarget: { clientX, clientY },
+          theme,
+          windowOffset: this.windowOffset,
+          offsetTop,
+        }, extendId, { nodeName: '空节点'});
+      const { x, y } = node;
+      const position = this.mapGrapPosition({ x, y})
+      nextNode = {
+        ...node,
+        ...position,
+        nodeName: '空节点',
+        frontData: {
+          label: '空节点',
+          ...JSON.parse(stringify)
+        }
+      }
+    } else {
+      const template = this.getModule('Itempannel').templates.filter(t => t.nodeName === name)[0]
+      const node = this.nodeMange.extendModelCard(shape,
+        {
+          dragOrigin: this.dragOrigin,
+          dragTarget: { clientX, clientY },
+          theme,
+          windowOffset: this.windowOffset,
+          offsetTop
+        }, extendId, template);
+      const { x, y } = node;
+      const position = this.mapGrapPosition({ x, y})
+      nextNode = {
+        ...node,
+        ...template,
+        ...position,
+        label: template.nodeName,
+        frontData: {
+          label: template.nodeName,
+          ...JSON.parse(stringify)
+        }
+      }
     }
     this.add('node', nextNode);
+    // const nodes = this.g6.getNodes()
+    // const source = nodes[0]._attrs.id
+    // const id = new Date().getTime();
+    // const target = nodes[1]._attrs.id;
+    // const style = {
+    //   arrow: true,
+    // }
+    // this.g6.add('edge', { source, id, target, style, shape: 'smooth', label: '' })
     this.g6.refresh();
+    setTimeout(() => {
+      const nodes = this.g6.getNodes();
+      this.sync({ type: 'node', operate: 'add', payload: {nodes} });
+    }, 0)
   }
 
   findDom() {
@@ -197,6 +421,10 @@ class Flow extends BaseDom {
     this.g6.removeBehaviour(arr);
   }
 
+  refresh() {
+    this.g6.refresh();
+  }
+
   render() {
     this.g6.render();
   }
@@ -204,124 +432,6 @@ class Flow extends BaseDom {
   read(data: any) {
     this.source(data.nodes, data.edges);
     this.render();
-  }
-
-  private registerAnyHandle() {
-    // 进入锚点切换到曲线添加模式
-    // 第五️步：编辑交互变形
-    var dragging = false;
-    this.g6.addBehaviour(['hoverNodeShowAnchor', 'dragEdge', 'dragEdgeEndHideAnchor', 'hoverAnchorSetActived'])
-    // this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
-    this.g6.removeBehaviour(['resizeNode']);
-
-    this.g6.on('dragstart', function(ev){
-      dragging = true;
-    });
-    this.g6.on('dragend', function(ev){
-      dragging = false;
-    });
-    this.g6.on('mouseenter', (ev) => {
-      var { item, shape } = ev;
-      // if(item.get('type') === 'node'){
-      //   this.showAnchor(item);
-      // }
-      if(shape && shape.hasClass('anchor-point') && !dragging) {
-        this.beginAdd('edge', {
-          shape: 'smooth',
-          style: {
-            arrow: true,
-          }
-        });
-      }
-    });
-    // 离开锚点切换回编辑模式
-    this.g6.on('mouseleave', (ev) => {
-      const { item, shape } = ev;
-      if(shape && shape.hasClass('anchor-point') && !dragging) {
-        this.changeMode('edit');
-      }
-    });
-    // this.g6.on('afteritemrender', (ev) => {
-    //   var item = ev.item;
-    //   if(item.get('type') === 'node'){
-    //     this.showAnchor(item);
-    //   }
-    // });
-    this.g6.on('click', (ev) => {
-      const { item } = ev;
-      if (!item) return;
-      const { _attrs: { id } } = item;
-      if (item._attrs.shapeObj.clickPath) {
-        const { minX: l, minY: t } = item._attrs.boxStash;
-        item._attrs.shapeObj.clickPath({ l, t }, ev);
-      }
-      if (ev.itemType === 'node') {
-        this.event.emitEvent('ToolBar@@listen_node', [ev.item._attrs]);
-      }
-    })
-
-    setTimeout(() => {
-      this.event.addListener('@delete_node', (ev: any) => {
-        const id = ev;
-        this.g6.remove(id);
-        this.g6.refresh();
-      });
-      this.event.addListener('@updo', (ev) => {
-        this.g6.updo();
-        this.g6.refresh();
-      })
-      this.event.addListener('@redo', (ev) => {
-        this.g6.redo();
-        this.g6.refresh();
-      })
-
-      this.event.addListener('@dragmode', (ev) => {
-        this.changeMode('drag');
-      })
-
-      this.event.addListener('@zoomIn', (ev) => {
-        const scale = this.g6.getScale();
-        this.g6._zoom(scale + 0.5)
-        this.g6.refresh()
-      })
-      this.event.addListener('@zoomOut', (ev) => {
-        const scale = this.g6.getScale();
-        if (scale <= 0.5) return;
-        this.g6._zoom(scale - 0.5)
-        this.g6.refresh()
-      })
-      this.event.addListener('@zoomReset', (ev) => {
-        this.g6._zoom(1)
-        this.g6.refresh()
-      })
-
-    }, 1000)
-
-    setTimeout(() => {
-      this.onDrag();
-    }, 50);
-
-    // this.g6.on('beforeaddedge', ev => {
-    //   debugger;
-    //   if (ev.anchor.type === 'input') {
-    //     ev.cancel = true;
-    //   }
-    // });
-    // this.g6.on('dragedge:beforeshowanchor', ev => {
-    //   debugger;
-    //   // 只允许目标锚点是输入，源锚点是输出，才能连接
-    //   if (!(ev.targetAnchor.type === 'input' && ev.sourceAnchor.type === 'output')) {
-    //     ev.cancel = true;
-    //   }
-    //   // 如果拖动的是目标方向，则取消显示目标节点中已被连过的锚点
-    //   if (ev.dragEndPointType === 'target' && this.g6.anchorHasBeenLinked(ev.target, ev.targetAnchor)) {
-    //     ev.cancel = true;
-    //   }
-    //   // 如果拖动的是源方向，则取消显示源节点中已被连过的锚点
-    //   if (ev.dragEndPointType === 'source' && this.g6.anchorHasBeenLinked(ev.source, ev.sourceAnchor)) {
-    //     ev.cancel = true;
-    //   }
-    // });
   }
 
   update(type: string, func: any) {

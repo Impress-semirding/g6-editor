@@ -7,18 +7,18 @@
 */
 import Flow from './flow';
 import getTpl from './tpls';
-import Manage from './store/stateManage'
+// import Manage from './store/stateManage'
 
 class GenNode {
   private _cfg: any;
   private _tpls: any;
   private nodes: any;
-  private manage: Manage;
+  // private manage: Manage;
   constructor(cfg: any) {
     this._cfg = cfg;
     this._tpls = [];
     this.nodes = [];
-    this.manage = new Manage();
+    // this.manage = new Manage();
   }
 
   getData() {
@@ -32,19 +32,26 @@ class GenNode {
       dragOrigin:  { clientX: oX, clientY: oY },
       dragTarget: { clientX, clientY },
       width,
-      height
+      height,
+      windowOffset: { left, top },
+      offsetTop
     } = attrs;
-    const x = clientX - oX - width;
-    const y = clientY - oY + height / 2;
+    const x = clientX - oX - width - 16;
+    const y = clientY - oY + parseInt(offsetTop);
+    // const y = clientY - (clientY - oY) - top;
     return { id, shape, x, y};
   }
 
   //  暂时只支持node节点模版
-  extendModelCard(shape: string,attrs: any, extendId: string) {
-    const tplAttrs = getTpl(shape);
-    const id = new Date().getTime().toString();
-    Flow.registerNode(shape, tplAttrs, extendId);
-    return this.createData(id, (<any>Object).assign({}, attrs, tplAttrs), shape);
+  extendModelCard(shape: string,attrs: any, extendId: string, node) {
+    // const tpl = getTpl(shape);
+    // const nextAttrs = tpl({ name: node.nodeName, color: attrs.theme });
+    const id = `node-${new Date().getTime().toString()}`;
+    // Flow.registerNode(shape, nextAttrs, extendId);
+    return this.createData(id, (<any>Object).assign({}, attrs, {
+      width: 168,
+      height: 48
+    }), shape);
   }
 }
 

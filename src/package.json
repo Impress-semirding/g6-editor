@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.ts",
   "dependencies": {
-    "@antv/g6": "^2.0.4-beta.3",
     "redux-undo": "^0.6.1",
-    "wolfy87-eventemitter": "^5.2.5"
+    "wolfy87-eventemitter": "^5.2.5",
+    "dagre": "^0.8.2"
   },
   "devDependencies": {
     "@types/node": "^10.5.2"

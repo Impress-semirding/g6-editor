@@ -10,6 +10,7 @@ import BaseDom from './dom';
 
 interface Options {
   container: string;
+  templates: any;
   itemKey?: string;
   interactiveType?: string;
 }
@@ -21,6 +22,7 @@ class Itempannel extends BaseDom {
   private datasets: Array<number>;
   private containers: any;
   private nodes: any;
+  private templates: any;
   constructor(options: Options) {
     super();
     this.event = null;
@@ -28,6 +30,7 @@ class Itempannel extends BaseDom {
     this.datasets = [];
     this.containers = null;
     this.nodes = [];
+    this.templates = options.templates;
   }
 
   addEventListener() {
@@ -67,6 +70,11 @@ class Itempannel extends BaseDom {
   ondragstart(ev: any) {
     ev.dataTransfer.setData('shape', ev.target.dataset.shape);
     ev.dataTransfer.setData('extendId', ev.target.dataset.extendid);
+    ev.dataTransfer.setData('name', ev.target.dataset.name);
+    ev.dataTransfer.setData('theme', ev.target.dataset.theme);
+    ev.dataTransfer.setData('stringify', ev.target.dataset.stringify);
+    const offsetTop = ev.target.offsetTop - document.getElementById(this.options.container).scrollTop;
+    ev.dataTransfer.setData('offsetTop', offsetTop)
     this.event.emitEvent('Itempannel@@dragitem', [ev]);
   }
 }

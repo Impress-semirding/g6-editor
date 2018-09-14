@@ -24,12 +24,13 @@ class ToolBar extends BaseDom {
   private containers: HTMLElement;
   private nodes: any;
   private datasets: Datasets;
-  private selected: any;
+  private selected: object;
   constructor(options: any) {
     super();
     this.event = null;
     this.options = options;
     this.datasets = {};
+    this.selected = {};
   }
 
   private undo() {
@@ -55,7 +56,13 @@ class ToolBar extends BaseDom {
 
   private delete() {
     const { selected: { id } } = this;
-    this.event.emitEvent('@delete_node', [id]);
+    if (id) {
+      this.event.emitEvent('@delete_node', [id]);
+    }
+  }
+
+  private dagre() {
+    this.event.emitEvent('@dagre_graph');
   }
 
   private zoomIn() {
@@ -108,6 +115,9 @@ class ToolBar extends BaseDom {
 
   listeningNode() {
     this.event.addListener(`${this.moduleName}@@listen_node`, (ev: any) => {
+      this.setfocus(ev);
+    });
+    this.event.addListener(`${this.moduleName}@@listen_edge`, (ev: any) => {
       this.setfocus(ev);
     });
   }
