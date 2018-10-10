@@ -9,7 +9,7 @@ function execute(source) {
   g.setGraph({
     rankdir: 'TB',
       align: undefined,
-      nodesep: 50,
+      nodesep: 80,
       edgesep: 10,
       ranksep: 50,
       marginx: 0,

@@ -425,6 +425,10 @@ class Flow extends BaseDom {
     this.g6.refresh();
   }
 
+  remove(param) {
+    this.g6.remove(param);
+  }
+
   render() {
     this.g6.render();
   }
