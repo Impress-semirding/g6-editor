@@ -68,7 +68,7 @@ class Flow extends BaseDom {
     let dragging = false;
     this.g6.addBehaviour(['hoverNodeShowAnchor', 'dragEdge', 'dragEdgeEndHideAnchor', 'hoverAnchorSetActived'])
     // this.g6.removeBehaviour(['hoverNodeShowAnchor', 'dragEdgeEndHideAnchor', 'dragNodeEndHideAnchor']);
-    this.g6.removeBehaviour(['resizeNode']);
+    this.g6.removeBehaviour(['resizeNode', 'multiSelect', 'resizeEdge', 'resizeNode']);
 
     this.g6.on('dragstart', function(ev){
       dragging = true;
