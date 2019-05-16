@@ -9,4 +9,6 @@
 
 cd demos/my-app  
 yarn 
-npm start  
+npm start
+
+已弃用...
